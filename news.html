@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Новини — АЕРО ХАБ</title>
+<meta name="description" content="Новини та публікації АЕРО ХАБ">
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<style>
+  :root{
+    --bg:#faf9f7;
+    --bg-alt:#ffffff;
+    --text:#20241f;
+    --text-muted:#5b6259;
+    --accent:#2f6b4f;
+    --accent-dark:#234f3b;
+    --accent-light:#e7f1ec;
+    --border:#e4e2dd;
+    --radius:14px;
+    --shadow:0 4px 18px rgba(20,30,25,0.07);
+    --header-h:64px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.55;
+  }
+  section,article{scroll-margin-top:var(--header-h);}
+  img{max-width:100%;display:block;}
+  a{color:inherit;}
+  .container{
+    width:100%;
+    max-width:1080px;
+    margin:0 auto;
+    padding:0 20px;
+  }
+
+  /* ---------- HEADER / NAV ---------- */
+  header{
+    position:sticky;
+    top:0;
+    z-index:100;
+    height:var(--header-h);
+    background:rgba(250,249,247,0.92);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--border);
+  }
+  .nav-inner{
+    height:var(--header-h);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .logo{
+    font-weight:700;
+    font-size:1.15rem;
+    letter-spacing:.2px;
+    text-decoration:none;
+    color:var(--accent-dark);
+    white-space:nowrap;
+    display:inline-flex;
+    align-items:center;
+  }
+  .logo img{
+    height:32px;
+    width:auto;
+    display:block;
+  }
+  nav.links{
+    display:flex;
+    gap:6px;
+  }
+  nav.links a{
+    text-decoration:none;
+    font-size:.95rem;
+    font-weight:500;
+    color:var(--text);
+    padding:8px 14px;
+    border-radius:999px;
+    transition:background .15s ease, color .15s ease;
+  }
+  nav.links a:hover{background:var(--accent-light);color:var(--accent-dark);}
+  nav.links a.current{color:var(--accent-dark);background:var(--accent-light);}
+  .nav-dropdown{
+    position:relative;
+    display:flex;
+    align-items:center;
+  }
+  .nav-dropdown-menu{
+    position:absolute;
+    top:100%;
+    left:0;
+    background:var(--bg-alt);
+    border:1px solid var(--border);
+    border-radius:12px;
+    box-shadow:var(--shadow);
+    min-width:260px;
+    padding:8px;
+    margin-top:6px;
+    opacity:0;
+    visibility:hidden;
+    transform:translateY(6px);
+    transition:opacity .15s ease, transform .15s ease, visibility .15s;
+    z-index:200;
+  }
+  .nav-dropdown:hover .nav-dropdown-menu,
+  .nav-dropdown:focus-within .nav-dropdown-menu{
+    opacity:1;
+    visibility:visible;
+    transform:translateY(0);
+  }
+  .nav-dropdown-menu a{
+    display:block;
+    padding:10px 12px;
+    border-radius:8px;
+    font-size:.88rem;
+    font-weight:500;
+    color:var(--text);
+    text-decoration:none;
+    white-space:nowrap;
+  }
+  .nav-dropdown-menu a:hover{
+    background:var(--accent-light);
+    color:var(--accent-dark);
+  }
+  .mobile-submenu{
+    font-size:.85rem !important;
+    font-weight:400 !important;
+    color:var(--text-muted) !important;
+    padding-left:36px !important;
+    border-top:none !important;
+  }
+  .burger{
+    display:none;
+    background:none;
+    border:none;
+    cursor:pointer;
+    padding:8px;
+    width:44px;
+    height:44px;
+    align-items:center;
+    justify-content:center;
+  }
+  .burger span,.burger span::before,.burger span::after{
+    content:"";
+    display:block;
+    width:22px;
+    height:2px;
+    background:var(--text);
+    position:relative;
+    transition:.2s;
+  }
+  .burger span::before{position:absolute;top:-7px;}
+  .burger span::after{position:absolute;top:7px;}
+  .mobile-menu{
+    display:none;
+    flex-direction:column;
+    background:var(--bg-alt);
+    border-bottom:1px solid var(--border);
+    box-shadow:var(--shadow);
+  }
+  .mobile-menu a{
+    text-decoration:none;
+    color:var(--text);
+    padding:14px 20px;
+    border-top:1px solid var(--border);
+    font-weight:500;
+  }
+  .mobile-menu.open{display:flex;}
+
+  @media (max-width:720px){
+    nav.links{display:none;}
+    .burger{display:flex;}
+  }
+
+  /* ---------- PAGE HEAD ---------- */
+  .page-hero{
+    padding:48px 0 32px;
+    text-align:center;
+  }
+  .page-hero h1{
+    font-size:clamp(1.7rem,4.5vw,2.4rem);
+    margin:0 0 10px;
+    color:var(--accent-dark);
+  }
+  .page-hero p{
+    color:var(--text-muted);
+    max-width:640px;
+    margin:0 auto;
+  }
+  .back-link{
+    display:inline-block;
+    margin:24px 0 0;
+    color:var(--accent);
+    font-weight:600;
+    text-decoration:none;
+    font-size:.92rem;
+  }
+  .back-link:hover{text-decoration:underline;}
+
+  /* ---------- ARTICLE ---------- */
+  .news-list{
+    padding:8px 0 72px;
+  }
+  .news-article{
+    max-width:760px;
+    margin:0 auto 64px;
+    padding-bottom:56px;
+    border-bottom:1px solid var(--border);
+  }
+  .news-article:last-child{
+    border-bottom:none;
+    margin-bottom:16px;
+  }
+  .news-article-hero{
+    width:100%;
+    border-radius:var(--radius);
+    overflow:hidden;
+    box-shadow:var(--shadow);
+    margin-bottom:28px;
+  }
+  .news-article-hero img{
+    width:100%;
+    height:auto;
+    max-height:560px;
+    object-fit:cover;
+    display:block;
+  }
+  .news-article-date{
+    color:var(--accent);
+    font-size:.9rem;
+    font-weight:600;
+    margin-bottom:10px;
+  }
+  .news-article-title{
+    font-size:clamp(1.4rem,3.2vw,1.9rem);
+    line-height:1.3;
+    margin:0 0 22px;
+    color:var(--accent-dark);
+  }
+  .news-article-body{
+    font-size:1.05rem;
+    line-height:1.75;
+    color:var(--text);
+  }
+  .news-article-body p{
+    margin:0 0 20px;
+  }
+  .news-article-body h3{
+    font-size:1.15rem;
+    margin:32px 0 14px;
+    color:var(--accent-dark);
+  }
+  .news-article-body ul{
+    margin:0 0 20px;
+    padding-left:22px;
+  }
+  .news-article-body li{
+    margin-bottom:8px;
+  }
+  .news-article-extra-img{
+    width:100%;
+    border-radius:var(--radius);
+    overflow:hidden;
+    box-shadow:var(--shadow);
+    margin:8px 0 28px;
+  }
+  .news-article-extra-img img{
+    width:100%;
+    height:auto;
+    display:block;
+  }
+  .news-article-extra-img figcaption{
+    padding:10px 4px 0;
+    font-size:.85rem;
+    color:var(--text-muted);
+    text-align:center;
+  }
+  .news-context{
+    background:var(--accent-light);
+    border-radius:var(--radius);
+    padding:22px 24px;
+    margin:8px 0 28px;
+  }
+  .news-context h4{
+    margin:0 0 12px;
+    font-size:1rem;
+    color:var(--accent-dark);
+  }
+  .news-context p{
+    margin:0 0 12px;
+    font-size:.98rem;
+    line-height:1.65;
+    color:var(--text);
+  }
+  .news-context p:last-child{
+    margin-bottom:0;
+  }
+  .news-article-quote{
+    border-left:3px solid var(--accent);
+    padding:4px 0 4px 20px;
+    margin:0 0 20px;
+    color:var(--text-muted);
+    font-style:italic;
+  }
+
+  /* ---------- FOOTER ---------- */
+  footer{
+    text-align:center;
+    padding:28px 20px 40px;
+    color:var(--text-muted);
+    font-size:.85rem;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container nav-inner">
+    <a href="index.html#top" class="logo"><img src="at-aero_3_2.png" alt="АЕРО ХАБ"></a>
+    <nav class="links">
+      <a href="index.html#about">Про нас</a>
+      <div class="nav-dropdown">
+        <a href="index.html#products">Продукція ▾</a>
+        <div class="nav-dropdown-menu">
+          <a href="index.html#cat-ground">Наземні роботизовані комплекси</a>
+          <a href="index.html#cat-air">Безпілотні літаючі апарати</a>
+          <a href="index.html#cat-comms">Засоби зв'язку</a>
+          <a href="index.html#cat-reb">РЕБ</a>
+        </div>
+      </div>
+      <a href="news.html" class="current">Новини</a>
+      <a href="index.html#media">Медіа</a>
+      <a href="index.html#partners">Партнери</a>
+      <a href="index.html#contacts">Контакти</a>
+      <a href="index.html#order">Замовити</a>
+    </nav>
+    <button class="burger" id="burgerBtn" aria-label="Меню"><span></span></button>
+  </div>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="index.html#about">Про нас</a>
+    <a href="index.html#products">Продукція</a>
+    <a href="index.html#cat-ground" class="mobile-submenu">— Наземні роботизовані комплекси</a>
+    <a href="index.html#cat-air" class="mobile-submenu">— Безпілотні літаючі апарати</a>
+    <a href="index.html#cat-comms" class="mobile-submenu">— Засоби зв'язку</a>
+    <a href="index.html#cat-reb" class="mobile-submenu">— РЕБ</a>
+    <a href="news.html">Новини</a>
+    <a href="index.html#media">Медіа</a>
+    <a href="index.html#partners">Партнери</a>
+    <a href="index.html#contacts">Контакти</a>
+    <a href="index.html#order">Замовити</a>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="container">
+    <h1>Новини АЕРО ХАБ</h1>
+    <p>Публікації, виставки та випробування наших розробок — повні тексти новин з фотографіями.</p>
+    <a href="index.html#top" class="back-link">← На головну</a>
+  </div>
+</section>
+
+<section class="news-list">
+  <div class="container">
+
+    <article class="news-article" id="news-1">
+      <div class="news-article-hero"><img src="images/news-vystavka.jpg" alt="АЕРО ХАБ на виставці «Технології захисту/ПожТех»"></div>
+      <div class="news-article-date">29 травня 2024</div>
+      <h2 class="news-article-title">AEROHUB на міжнародній спеціалізованій виставці «Технології захисту/ПожТех»</h2>
+      <div class="news-article-body">
+        <p>Команда АЕРО ХАБ взяла участь у Міжнародній спеціалізованій виставці «Технології захисту/пожтех» та представила свої розробки керованих наземних платформ зі спеціальним оснащенням.</p>
+        <p>Велика кількість відвідувачів на виставці звертали свою увагу не лише на оснащення у сфері пожежної та промислової безпеки, рятувальної справи, а й на системи цивільного захисту, які представили розробники АЕРО ХАБ. Серед тих, хто ознайомився з роботизованими системами були Перший віцепрем'єр — міністр України — Міністр економіки України Юлія Свириденко, генеральний директор Федерація роботодавців України Руслан Іллічов та Голова Ради Федерації роботодавців України Дмитро Олійник.</p>
+        <figure class="news-article-extra-img">
+          <img src="images/news-vystavka-2.jpg" alt="Команда АЕРО ХАБ на стенді виставки з роботизованим комплексом">
+          <figcaption>Стенд АЕРО ХАБ на Міжнародній спеціалізованій виставці «Технології захисту/ПожТех»</figcaption>
+        </figure>
+        <p>У рамках Міжнародної виставки стенд Асоціація фахівців цивільного захисту та розробники AERO HUB надавала всю важливу інформацію про свою роботу й досягнення. Пріоритетний напрямок діяльності ГО «АЕРОХАБ» — це розробка і виробництво пристроїв та обладнання для розмінування, обладнання для виявлення мін та ВНП, обладнання для знешкодження вибухонебезпечних предметів.</p>
+        <div class="news-context">
+          <h4>Довідково</h4>
+          <p>ГО «АЕРО ХАБ» (раніше відома під брендом AERO HUB) — українська громадська організація розробників, що спеціалізується на наземних роботизованих комплексах та безпілотних системах подвійного призначення: від гуманітарного й військового розмінування до логістики та засобів радіоелектронної боротьби. Участь у профільних виставках на кшталт «Технології захисту/ПожТех» — частина постійної роботи команди з демонстрації своїх розробок представникам держави, бізнесу та рятувальних служб.</p>
+        </div>
+      </div>
+    </article>
+
+    <article class="news-article" id="news-2">
+      <div class="news-article-hero"><img src="images/kaban-1.jpg" alt="Дрон-сапер «Кабан»"></div>
+      <div class="news-article-date">21 березня 2024</div>
+      <h2 class="news-article-title">Український СТАРТАП: як працює дрон-сапер «КАБАН»</h2>
+      <div class="news-article-body">
+        <p>Чотири потужних колеса, захищений корпус і можливість знімати розтяжки як на відкритій місцевості, так і в приміщеннях. У Харківській області саперні групи використовують наземний безпілотник «КАБАН».</p>
+        <p>Українські інженери створили апарат, призначений для нейтралізації розтяжок і протипіхотних мін.</p>
+        <div class="news-context">
+          <h4>Довідково: що таке «Кабан»</h4>
+          <p>«Кабан» — наземний роботизований комплекс, розроблений українськими інженерами, зокрема спільнотою розробників з ГО «АЕРО ХАБ». Завдяки чотирьом потужним колесам і броньованому корпусу він здатен витримувати підриви протипіхотних мін і працювати як на відкритій місцевості, так і в приміщеннях — там, де людині наближатись до розтяжки чи міни небезпечно.</p>
+          <p>Комплекс багаторазового використання і ремонтопридатний навіть у польових умовах, а його розробники продовжують вдосконалювати модифікації «Кабана» для логістичних, розвідувальних і розмінувальних задач — детальніше про випробування читайте у новині «Допомога на нулі» нижче.</p>
+        </div>
+      </div>
+    </article>
+
+    <article class="news-article" id="news-3">
+      <div class="news-article-hero"><img src="images/kaban-2.jpg" alt="Дрон «Кабан» на тестуванні"></div>
+      <div class="news-article-date">21 березня 2024</div>
+      <h2 class="news-article-title">З дроном «Кабаном»: винахідники з Києва показали новий спосіб розмінування</h2>
+      <div class="news-article-body">
+        <p>В Україні активно шукають ідеї, які допоможуть полегшити та пришвидшити розмінування територій. Винахідники з Києва розробили дрон на дистанційному керуванні, який отримав назву «Кабан».</p>
+        <p>Наземний безпілотник має полегшити перевірку складної місцевості, як-от пагорби та чагарники. Його габарити також дозволяють працювати у приміщеннях. Такою інформацією поділилася кореспондентка 24 Каналу Анна Черненко, яка побувала на місці тестування БпЛА.</p>
+        <h3>Як працює дрон «Кабан»</h3>
+        <p>Черненко розповіла, що зараз винахідники хочуть розмінувати поле на Дергачівщині, де росіяни під час окупації залишили багато «сюрпризів». Розробники пропонують три ступені розмінування:</p>
+        <ul>
+          <li>спочатку проїжджає дрон на дистанційному керуванні «Кабан»;</li>
+          <li>далі йдуть сапери, які металошукачем перевіряють територію;</li>
+          <li>завершує розчищення поля машина з тралом, який тепер розташовується з боку.</li>
+        </ul>
+        <p>«Кабана» розробили військові, які працюють з повітряними дронами. Вони розповіли, що БпЛА можуть використовувати також для підвозу якихось речей та у крайньому разі для евакуації поранених.</p>
+        <p class="news-article-quote">«Назвали "Кабаном" через те, що він, як кабан проривається крізь будь-що. Попередня версія була дуже шумною та його сильно чули, тому вирішили, що це точно кабан», — сказав один із розробників дрона Денис.</p>
+        <p>БпЛА багаторазового використання. Його можна відремонтувати навіть в польових умовах. Колеса міцні та витримують протипіхотні міни та «пелюстки».</p>
+        <p class="news-article-quote">«Він унікальний тим, що зроблений не тільки для розмінування в полях. Його габарити дозволяють працювати в приміщеннях, забезпечити безпеку ДСНС. Також на цей дрон плануємо зробити додаток, який буде помічати залишки мін та снарядів на мапі», — зазначив один із розробників дрона Ігор Касян.</p>
+        <p>Підсумовуючи, представник Благодійного фонду «Розмінування України» Ян Артюхов розповів, що винахідники хочуть розмінувати поле неподалік від міста Дергачі, щоб цьогоріч засіяти якусь культуру та відповідно зібрати гарний урожай.</p>
+      </div>
+    </article>
+
+    <article class="news-article" id="news-4">
+      <div class="news-article-hero"><img src="images/news-kaban-boar.jpg" alt="Випробування наземного дрона «Кабан»"></div>
+      <div class="news-article-date">13 березня 2024</div>
+      <h2 class="news-article-title">Допомога на нулі: українські військові провели випробування наземного дрона «Кабан» (BOAR)</h2>
+      <div class="news-article-body">
+        <p>Україна продовжує розвивати свої військові технології, щоб забезпечити безпеку та ефективність військових операцій. Нещодавно в країні пройшли успішні випробування роботизованих наземних платформ — розробок кластера Brave1.</p>
+        <p>Про це повідомив міністр цифрової трансформації Михайло Федоров у Telegram.</p>
+        <p>Як наголосив Федоров, основна мета наземних роботів — мінімізувати участь людини на полі бою. Це допоможе зберігати життя і здоров'я українських воїнів.</p>
+        <p class="news-article-quote">«Наземні роботизовані комплекси стануть наступним геймчейнджером цієї війни, яким вже є дрони. Це асиметрична відповідь на кількісну перевагу ворога. Кластер Brave1 робить усе для масштабування виробництва роботів, а держава починає їх масово закуповувати», — підкреслив урядовець.</p>
+        <p>Міністр додав, що на платформі Brave1 зареєстровано понад 140 роботизованих систем, 96 з них пройшли оборонну експертизу, 14 розробок кодифіковано за стандартами НАТО. Частина із цих роботів уже працює на фронті.</p>
+        <h3>Нова технологія для військового застосування</h3>
+        <p>Організаторами випробувань BRAVE1 разом із представниками міністерства оборони випробували понад 50 роботизованих систем різних типів, зокрема, і новий дрон «Кабан».</p>
+        <p>«Кабан» — це наземний дрон, розроблений українськими інженерами, зокрема спільнотою розробників з ГО «АЕРО ХАБ». Громадська організація «AERO HUB» вже відома своєю активною участю в розвитку військової техніки та робототехніки в Україні. Зокрема, їхній безпілотний комплекс «СТРАЖ» (UAV GUARD) вже неодноразово показав свою ефективність на полі бою.</p>
+        <h3>BRAVE 1</h3>
+        <p>Це кластер для розвитку військових технологій в Україні, заснований Міністерством цифрової трансформації України, Міністерством оборони України, Генеральним штабом Збройних Сил України, Радою національної безпеки й оборони, Міністерством стратегічних галузей України, Міністерством економіки України.</p>
+        <p>В результаті випробувань було відзначено, що роботизована платформа «Кабан», залежно від її модифікації, може виконувати дуже великий спектр бойових задач на полі бою, зокрема:</p>
+        <ul>
+          <li>Розвідка та моніторинг: дрон може виконувати місії розвідки, збираючи важливу інформацію про рухи противника або потенційні загрози національній безпеці.</li>
+          <li>Патрулювання території: його можна використовувати для нагляду та патрулювання, що допомагає українським військам ефективніше контролювати досить велику частину території, не наражаючи на небезпеку особовий склад.</li>
+          <li>Артилерійська підтримка: «Кабан» може бути використаний для точного визначення цілей та надання координат артилерійській підтримці, що підвищує точність та ефективність вогневої підтримки.</li>
+          <li>Пошук і рятування: дрон може допомагати в пошуку та рятуванні в разі надзвичайних ситуацій, надаючи швидку та точну інформацію про потерпілих.</li>
+          <li>Логістичні та розмінувальні завдання: комплекс «Кабан» може бути використаний для виконання логістичних завдань та розмінувальних операцій на території конфлікту.</li>
+        </ul>
+        <p>Найбільше зацікавила українських військових система «Кабан» саме з точки зору логістики. Невеликі розміри дрона у порівнянні з іншими аналогами такого класу дають суттєву перевагу. Велика прохідність дозволяє виконувати завдання та при цьому дрону залишатися непоміченим засобами виявлення ворога.</p>
+        <h3>Успішні випробування та перспективи використання</h3>
+        <p>Випробування «Кабана» в Україні були успішними, демонструючи його високу продуктивність та надійність. Нова технологія «Кабана» може стати важливим компонентом військової стратегії України, допомагаючи забезпечити перевагу на полі бою та зміцнити обороноздатність країни. Розвиток та впровадження подібних інновацій свідчить про те, що Україна віддана своєму шляху до модернізації своїх військових сил та забезпеченню безпеки своїх громадян.</p>
+      </div>
+    </article>
+
+    <div style="text-align:center;">
+      <a href="index.html#top" class="back-link">← На головну</a>
+    </div>
+
+  </div>
+</section>
+
+<footer>
+  <div>© 2026 АЕРО ХАБ. Усі права захищено.</div>
+</footer>
+
+<script>
+  const burgerBtn = document.getElementById('burgerBtn');
+  const mobileMenu = document.getElementById('mobileMenu');
+  burgerBtn.addEventListener('click', () => mobileMenu.classList.toggle('open'));
+  mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => mobileMenu.classList.remove('open')));
+</script>
+
+</body>
+</html>

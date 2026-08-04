@@ -1,0 +1,1510 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>АЕРО ХАБ</title>
+<meta name="description" content="Сайт-візитка з каталогом товарів">
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<style>
+  :root{
+    --bg:#faf9f7;
+    --bg-alt:#ffffff;
+    --text:#20241f;
+    --text-muted:#5b6259;
+    --accent:#2f6b4f;
+    --accent-dark:#234f3b;
+    --accent-light:#e7f1ec;
+    --border:#e4e2dd;
+    --radius:14px;
+    --shadow:0 4px 18px rgba(20,30,25,0.07);
+    --header-h:64px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.55;
+  }
+  section{scroll-margin-top:var(--header-h);}
+  img{max-width:100%;display:block;}
+  a{color:inherit;}
+  .container{
+    width:100%;
+    max-width:1080px;
+    margin:0 auto;
+    padding:0 20px;
+  }
+
+  /* ---------- HEADER / NAV ---------- */
+  header{
+    position:sticky;
+    top:0;
+    z-index:100;
+    height:var(--header-h);
+    background:rgba(250,249,247,0.92);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--border);
+  }
+  .nav-inner{
+    height:var(--header-h);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .logo{
+    font-weight:700;
+    font-size:1.15rem;
+    letter-spacing:.2px;
+    text-decoration:none;
+    color:var(--accent-dark);
+    white-space:nowrap;
+    display:inline-flex;
+    align-items:center;
+  }
+  .logo img{
+    height:32px;
+    width:auto;
+    display:block;
+  }
+  nav.links{
+    display:flex;
+    gap:6px;
+  }
+  nav.links a{
+    text-decoration:none;
+    font-size:.95rem;
+    font-weight:500;
+    color:var(--text);
+    padding:8px 14px;
+    border-radius:999px;
+    transition:background .15s ease, color .15s ease;
+  }
+  nav.links a:hover{background:var(--accent-light);color:var(--accent-dark);}
+  .nav-dropdown{
+    position:relative;
+    display:flex;
+    align-items:center;
+  }
+  .nav-dropdown-menu{
+    position:absolute;
+    top:100%;
+    left:0;
+    background:var(--bg-alt);
+    border:1px solid var(--border);
+    border-radius:12px;
+    box-shadow:var(--shadow);
+    min-width:260px;
+    padding:8px;
+    margin-top:6px;
+    opacity:0;
+    visibility:hidden;
+    transform:translateY(6px);
+    transition:opacity .15s ease, transform .15s ease, visibility .15s;
+    z-index:200;
+  }
+  .nav-dropdown:hover .nav-dropdown-menu,
+  .nav-dropdown:focus-within .nav-dropdown-menu{
+    opacity:1;
+    visibility:visible;
+    transform:translateY(0);
+  }
+  .nav-dropdown-menu a{
+    display:block;
+    padding:10px 12px;
+    border-radius:8px;
+    font-size:.88rem;
+    font-weight:500;
+    color:var(--text);
+    text-decoration:none;
+    white-space:nowrap;
+  }
+  .nav-dropdown-menu a:hover{
+    background:var(--accent-light);
+    color:var(--accent-dark);
+  }
+  .mobile-submenu{
+    font-size:.85rem !important;
+    font-weight:400 !important;
+    color:var(--text-muted) !important;
+    padding-left:36px !important;
+    border-top:none !important;
+  }
+  .burger{
+    display:none;
+    background:none;
+    border:none;
+    cursor:pointer;
+    padding:8px;
+    width:44px;
+    height:44px;
+    align-items:center;
+    justify-content:center;
+  }
+  .burger span,.burger span::before,.burger span::after{
+    content:"";
+    display:block;
+    width:22px;
+    height:2px;
+    background:var(--text);
+    position:relative;
+    transition:.2s;
+  }
+  .burger span::before{position:absolute;top:-7px;}
+  .burger span::after{position:absolute;top:7px;}
+  .mobile-menu{
+    display:none;
+    flex-direction:column;
+    background:var(--bg-alt);
+    border-bottom:1px solid var(--border);
+    box-shadow:var(--shadow);
+  }
+  .mobile-menu a{
+    text-decoration:none;
+    color:var(--text);
+    padding:14px 20px;
+    border-top:1px solid var(--border);
+    font-weight:500;
+  }
+  .mobile-menu.open{display:flex;}
+
+  @media (max-width:720px){
+    nav.links{display:none;}
+    .burger{display:flex;}
+  }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    padding:64px 0 56px;
+    text-align:center;
+  }
+  .hero h1{
+    font-size:clamp(1.8rem,5vw,2.7rem);
+    margin:0 0 14px;
+    color:var(--accent-dark);
+  }
+  .hero p{
+    font-size:1.1rem;
+    color:var(--text-muted);
+    max-width:960px;
+    margin:0 auto 28px;
+  }
+  .btn{
+    display:inline-block;
+    background:var(--accent);
+    color:#fff;
+    text-decoration:none;
+    padding:13px 28px;
+    border-radius:999px;
+    font-weight:600;
+    font-size:1rem;
+    border:none;
+    cursor:pointer;
+    transition:background .15s ease, transform .1s ease;
+  }
+  .btn:hover{background:var(--accent-dark);}
+  .btn:active{transform:scale(.98);}
+  .btn-outline{
+    background:transparent;
+    color:var(--accent-dark);
+    border:1.5px solid var(--accent);
+  }
+  .btn-outline:hover{background:var(--accent-light);}
+
+  /* ---------- SECTION GENERIC ---------- */
+  .section{padding:72px 0;}
+  .section-alt{background:var(--bg-alt);}
+  .section-title{
+    font-size:1.6rem;
+    margin:0 0 8px;
+    color:var(--accent-dark);
+    text-align:center;
+  }
+  .section-sub{
+    text-align:center;
+    color:var(--text-muted);
+    max-width:520px;
+    margin:0 auto 36px;
+  }
+  #products{
+    padding-top:88px;
+  }
+
+  /* ---------- ABOUT ---------- */
+  .about-wrap{
+    display:flex;
+    gap:36px;
+    align-items:center;
+    flex-wrap:wrap;
+  }
+  .about-photo{
+    flex:1 1 240px;
+    max-width:280px;
+    margin:0 auto;
+  }
+  .about-photo img{
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    aspect-ratio:1/1;
+    object-fit:cover;
+  }
+  .about-text{
+    flex:2 1 320px;
+    color:var(--text-muted);
+    font-size:1.02rem;
+  }
+
+  /* ---------- LINEUP (Продукція) ---------- */
+  .lineup-category{
+    margin-bottom:44px;
+  }
+  .lineup-category:last-child{
+    margin-bottom:0;
+  }
+  .lineup-cat-head{
+    display:flex;
+    align-items:baseline;
+    gap:12px;
+    flex-wrap:wrap;
+    margin-bottom:6px;
+  }
+  .lineup-cat-icon{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:34px;
+    height:34px;
+    border-radius:10px;
+    background:var(--accent-light);
+    color:var(--accent);
+    font-size:1.1rem;
+    flex-shrink:0;
+  }
+  .lineup-cat-title{
+    font-size:1.3rem;
+    font-weight:700;
+    margin:0;
+  }
+  .lineup-cat-desc{
+    color:var(--text-muted);
+    font-size:.95rem;
+    margin:0 0 20px;
+    max-width:760px;
+    line-height:1.5;
+  }
+  .lineup-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
+    gap:20px;
+  }
+  .lineup-card{
+    background:var(--bg-alt);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+    box-shadow:var(--shadow);
+    transition:transform .18s ease, box-shadow .18s ease;
+  }
+  .lineup-card:hover{
+    transform:translateY(-3px);
+    box-shadow:0 10px 26px rgba(20,30,25,0.12);
+  }
+  .lineup-img-wrap{
+    width:100%;
+    aspect-ratio:4/3;
+    overflow:hidden;
+    background:var(--accent-light);
+  }
+  .lineup-img-wrap img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+  }
+  .lineup-body{
+    padding:16px 18px 18px;
+    display:flex;
+    flex-direction:column;
+    flex:1;
+  }
+  .lineup-name{
+    font-size:1.05rem;
+    font-weight:700;
+    margin:0 0 6px;
+  }
+  .lineup-teaser{
+    color:var(--text-muted);
+    font-size:.92rem;
+    line-height:1.5;
+    margin:0 0 12px;
+    flex:1;
+  }
+  .lineup-price{
+    color:var(--accent);
+    font-weight:700;
+    font-size:.92rem;
+    margin:0 0 10px;
+  }
+  .lineup-details{
+    margin-top:auto;
+    border-top:1px solid var(--border);
+    padding-top:10px;
+  }
+  .lineup-details summary{
+    cursor:pointer;
+    color:var(--accent);
+    font-weight:600;
+    font-size:.9rem;
+    list-style:none;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    user-select:none;
+  }
+  .lineup-details summary::-webkit-details-marker{
+    display:none;
+  }
+  .lineup-details summary::after{
+    content:"▾";
+    transition:transform .18s ease;
+    font-size:.8rem;
+  }
+  .lineup-details[open] summary::after{
+    transform:rotate(180deg);
+  }
+  .lineup-details ul{
+    margin:10px 0 0;
+    padding-left:18px;
+    color:var(--text-muted);
+    font-size:.88rem;
+    line-height:1.55;
+  }
+  .lineup-details ul li{
+    margin-bottom:4px;
+  }
+  .lineup-note{
+    color:var(--text-muted);
+    font-size:.8rem;
+    font-style:italic;
+    margin-top:24px;
+  }
+  .lineup-img-wrap.card-gallery img{
+    cursor:zoom-in;
+  }
+  .lineup-body .btn{
+    align-self:flex-start;
+    padding:9px 20px;
+    font-size:.9rem;
+    margin-top:4px;
+  }
+  .lineup-cat-nav{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    justify-content:center;
+    margin:0 0 40px;
+  }
+  .lineup-cat-nav a{
+    text-decoration:none;
+    font-size:.9rem;
+    font-weight:600;
+    color:var(--accent-dark);
+    background:var(--accent-light);
+    padding:8px 16px;
+    border-radius:999px;
+  }
+  .lineup-cat-nav a:hover{
+    background:var(--accent);
+    color:#fff;
+  }
+
+  /* ---------- NEWS ---------- */
+  .news-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+    gap:22px;
+    align-items:start;
+  }
+  .news-card{
+    background:var(--bg-alt);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    overflow:hidden;
+    box-shadow:var(--shadow);
+    display:flex;
+    flex-direction:column;
+  }
+  .news-img-wrap{
+    display:block;
+    width:100%;
+    aspect-ratio:16/10;
+    overflow:hidden;
+    background:var(--accent-light);
+    cursor:pointer;
+  }
+  .news-img-wrap img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+    transition:transform .2s ease;
+  }
+  .news-img-wrap:hover img{
+    transform:scale(1.04);
+  }
+  .news-card-body{
+    padding:22px 20px;
+    display:flex;
+    flex-direction:column;
+    flex:1;
+  }
+  .news-date{
+    color:var(--accent);
+    font-size:.85rem;
+    font-weight:600;
+    margin-bottom:8px;
+  }
+  .news-title{
+    font-size:1.08rem;
+    line-height:1.35;
+    margin:0 0 10px;
+  }
+  .news-title a{
+    color:var(--text);
+    text-decoration:none;
+  }
+  .news-title a:hover{
+    color:var(--accent-dark);
+  }
+  .news-excerpt{
+    color:var(--text-muted);
+    font-size:.95rem;
+    line-height:1.5;
+    flex:1;
+    margin:0 0 14px;
+  }
+  .news-link{
+    color:var(--accent);
+    font-weight:600;
+    text-decoration:none;
+    font-size:.95rem;
+    margin-top:auto;
+  }
+  .news-link:hover{
+    text-decoration:underline;
+  }
+  .news-all-link{
+    color:var(--accent);
+    font-weight:600;
+    text-decoration:none;
+    margin-left:8px;
+  }
+  .news-all-link:hover{
+    text-decoration:underline;
+  }
+
+  /* ---------- PRODUCTS ---------- */
+  .products-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(230px,1fr));
+    gap:22px;
+  }
+  .card{
+    background:var(--bg-alt);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+    box-shadow:var(--shadow);
+  }
+  .card-img{
+    width:100%;
+    aspect-ratio:4/3;
+    object-fit:cover;
+    background:var(--accent-light);
+  }
+  .card-gallery{
+    position:relative;
+    overflow:hidden;
+  }
+  .card-gallery .card-img{
+    cursor:zoom-in;
+  }
+  .gal-btn{
+    position:absolute;
+    top:50%;
+    transform:translateY(-50%);
+    background:rgba(0,0,0,0.45);
+    color:#fff;
+    border:none;
+    width:30px;
+    height:30px;
+    border-radius:50%;
+    cursor:pointer;
+    font-size:1.1rem;
+    line-height:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:0;
+  }
+  .gal-btn:hover{background:rgba(0,0,0,0.65);}
+  .gal-prev{left:8px;}
+  .gal-next{right:8px;}
+  .gal-dots{
+    position:absolute;
+    bottom:8px;
+    left:0;
+    right:0;
+    display:flex;
+    justify-content:center;
+    gap:6px;
+  }
+  .gal-dots .dot{
+    width:6px;
+    height:6px;
+    border-radius:50%;
+    background:rgba(255,255,255,0.65);
+    cursor:pointer;
+    border:none;
+    padding:0;
+  }
+  .gal-dots .dot.active{background:#fff;}
+  .card-body{
+    padding:16px 18px 18px;
+    display:flex;
+    flex-direction:column;
+    flex:1;
+  }
+  .card-body h3{
+    margin:0 0 6px;
+    font-size:1.08rem;
+  }
+  .card-body p{
+    color:var(--text-muted);
+    font-size:.92rem;
+    margin:0 0 14px;
+    flex:1;
+  }
+  .card-price{
+    font-weight:700;
+    color:var(--accent-dark);
+    font-size:1.05rem;
+    margin-bottom:12px;
+  }
+  .card-body .btn{
+    align-self:flex-start;
+    padding:9px 20px;
+    font-size:.9rem;
+  }
+  .empty-note{
+    text-align:center;
+    color:var(--text-muted);
+    padding:20px;
+  }
+
+  /* ---------- LIGHTBOX (перегляд фото на весь екран) ---------- */
+  .lightbox{
+    position:fixed;
+    inset:0;
+    background:rgba(10,15,12,0.92);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:1000;
+    padding:20px;
+  }
+  .lightbox.open{display:flex;}
+  .lightbox img{
+    max-width:90vw;
+    max-height:85vh;
+    border-radius:10px;
+    display:block;
+  }
+  .lightbox-close{
+    position:absolute;
+    top:16px;
+    right:20px;
+    background:none;
+    border:none;
+    color:#fff;
+    font-size:2.2rem;
+    cursor:pointer;
+    line-height:1;
+  }
+  .lightbox-prev,.lightbox-next{
+    position:absolute;
+    top:50%;
+    transform:translateY(-50%);
+    background:rgba(255,255,255,0.15);
+    color:#fff;
+    border:none;
+    width:44px;
+    height:44px;
+    border-radius:50%;
+    font-size:1.6rem;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .lightbox-prev:hover,.lightbox-next:hover,.lightbox-close:hover{background:rgba(255,255,255,0.15);}
+  .lightbox-prev{left:12px;}
+  .lightbox-next{right:12px;}
+  @media (max-width:600px){
+    .lightbox-prev{left:4px;}
+    .lightbox-next{right:4px;}
+  }
+
+  /* ---------- MEDIA ---------- */
+  .media-filter{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    justify-content:center;
+    margin:0 0 32px;
+  }
+  .media-filter button{
+    font-family:inherit;
+    cursor:pointer;
+    text-decoration:none;
+    font-size:.9rem;
+    font-weight:600;
+    color:var(--accent-dark);
+    background:var(--accent-light);
+    border:none;
+    padding:8px 16px;
+    border-radius:999px;
+  }
+  .media-filter button:hover{
+    background:var(--accent);
+    color:#fff;
+  }
+  .media-filter button.active{
+    background:var(--accent);
+    color:#fff;
+  }
+  .media-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+    gap:20px;
+  }
+  .media-card{
+    position:relative;
+    border-radius:var(--radius);
+    overflow:hidden;
+    box-shadow:var(--shadow);
+    cursor:zoom-in;
+    aspect-ratio:3/2;
+    background:var(--accent-light);
+  }
+  .media-card img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+    transition:transform .2s ease;
+  }
+  .media-card:hover img{
+    transform:scale(1.05);
+  }
+  .media-card-caption{
+    position:absolute;
+    left:0;
+    right:0;
+    bottom:0;
+    padding:28px 14px 12px;
+    background:linear-gradient(to top, rgba(10,15,12,0.82), rgba(10,15,12,0));
+    color:#fff;
+    font-size:.88rem;
+    font-weight:600;
+    line-height:1.35;
+  }
+  .media-card.hidden{
+    display:none;
+  }
+
+  /* ---------- PARTNERS ---------- */
+  .partners-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(190px,1fr));
+    gap:20px;
+  }
+  .partner-card{
+    background:var(--bg-alt);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    overflow:hidden;
+    box-shadow:var(--shadow);
+    display:flex;
+    flex-direction:column;
+    text-align:center;
+  }
+  .partner-card-img{
+    width:100%;
+    aspect-ratio:487/567;
+    overflow:hidden;
+    background:#fff;
+  }
+  .partner-card-img img{
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    display:block;
+  }
+  .partner-card-name{
+    padding:14px 12px 16px;
+    font-size:.86rem;
+    font-weight:600;
+    line-height:1.4;
+    color:var(--text);
+  }
+
+  /* ---------- CONTACTS ---------- */
+  .contacts-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    gap:24px;
+    text-align:center;
+  }
+  .contact-item{
+    background:var(--bg-alt);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:22px 16px;
+  }
+  .contact-item .label{
+    font-size:.8rem;
+    text-transform:uppercase;
+    letter-spacing:.5px;
+    color:var(--text-muted);
+    margin-bottom:6px;
+  }
+  .contact-item a{
+    text-decoration:none;
+    font-weight:600;
+    color:var(--accent-dark);
+    word-break:break-word;
+  }
+  .socials{
+    display:flex;
+    justify-content:center;
+    gap:14px;
+    margin-top:28px;
+    flex-wrap:wrap;
+  }
+  .socials a{
+    text-decoration:none;
+    font-weight:600;
+    color:var(--accent-dark);
+    background:var(--accent-light);
+    padding:9px 18px;
+    border-radius:999px;
+    font-size:.9rem;
+  }
+
+  /* ---------- ORDER FORM ---------- */
+  form{
+    max-width:520px;
+    margin:0 auto;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+  }
+  label{
+    font-size:.88rem;
+    font-weight:600;
+    color:var(--text);
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+  }
+  input,select,textarea{
+    font-family:inherit;
+    font-size:1rem;
+    padding:12px 14px;
+    border-radius:10px;
+    border:1px solid var(--border);
+    background:var(--bg-alt);
+    color:var(--text);
+    width:100%;
+  }
+  input:focus,select:focus,textarea:focus{
+    outline:2px solid var(--accent);
+    outline-offset:1px;
+  }
+  textarea{resize:vertical;min-height:90px;}
+  .form-msg{
+    font-size:.92rem;
+    padding:12px 14px;
+    border-radius:10px;
+    display:none;
+  }
+  .form-msg.show{display:block;}
+  .form-msg.ok{background:var(--accent-light);color:var(--accent-dark);}
+  .form-msg.err{background:#fbe9e7;color:#a13a2c;}
+
+  /* ---------- FOOTER ---------- */
+  footer{
+    text-align:center;
+    padding:28px 20px 40px;
+    color:var(--text-muted);
+    font-size:.85rem;
+  }
+
+  .skeleton{
+    background:linear-gradient(90deg,var(--border) 25%,#f0efec 37%,var(--border) 63%);
+    background-size:400% 100%;
+    animation:shimmer 1.4s ease infinite;
+    border-radius:var(--radius);
+    height:280px;
+  }
+  @keyframes shimmer{
+    0%{background-position:100% 50%;}
+    100%{background-position:0 50%;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container nav-inner">
+    <a href="#top" class="logo" id="siteLogo"><img src="at-aero_3_2.png" alt="АЕРО ХАБ"></a>
+    <nav class="links">
+      <a href="#about">Про нас</a>
+      <div class="nav-dropdown">
+        <a href="#products">Продукція ▾</a>
+        <div class="nav-dropdown-menu">
+          <a href="#cat-ground">Наземні роботизовані комплекси</a>
+          <a href="#cat-air">Безпілотні літаючі апарати</a>
+          <a href="#cat-comms">Засоби зв'язку</a>
+          <a href="#cat-reb">РЕБ</a>
+        </div>
+      </div>
+      <a href="#news">Новини</a>
+      <a href="#media">Медіа</a>
+      <a href="#partners">Партнери</a>
+      <a href="#contacts">Контакти</a>
+      <a href="#order">Замовити</a>
+    </nav>
+    <button class="burger" id="burgerBtn" aria-label="Меню"><span></span></button>
+  </div>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#about">Про нас</a>
+    <a href="#products">Продукція</a>
+    <a href="#cat-ground" class="mobile-submenu">— Наземні роботизовані комплекси</a>
+    <a href="#cat-air" class="mobile-submenu">— Безпілотні літаючі апарати</a>
+    <a href="#cat-comms" class="mobile-submenu">— Засоби зв'язку</a>
+    <a href="#cat-reb" class="mobile-submenu">— РЕБ</a>
+    <a href="#news">Новини</a>
+    <a href="#media">Медіа</a>
+    <a href="#partners">Партнери</a>
+    <a href="#contacts">Контакти</a>
+    <a href="#order">Замовити</a>
+  </div>
+</header>
+
+<div id="top"></div>
+
+<section class="hero">
+  <div class="container">
+    <h1 id="heroTitle">Дрони, які працюють на результат</h1>
+    <p id="heroSubtitle">Розробляємо, виробляємо та впроваджуємо безпілотні літальні апарати для агросектору, моніторингу та логістики.</p>
+    <a href="#products" class="btn">Переглянути товари</a>
+  </div>
+</section>
+
+<section class="section section-alt" id="about">
+  <div class="container">
+    <h2 class="section-title">Про нас</h2>
+    <div class="about-wrap">
+      <div class="about-photo">
+        <img id="aboutPhoto" src="" alt="Фото" style="display:none;">
+      </div>
+      <div class="about-text" id="aboutText">
+        «АЕРО ХАБ» — українська команда інженерів і розробників, яка спеціалізується на створенні дронів під конкретні задачі клієнта: від аграрного моніторингу до картографування та логістики. Ми поєднуємо власне виробництво, тестування та технічну підтримку, щоб кожен дрон надійно працював у реальних умовах.
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="products">
+  <div class="container">
+    <h2 class="section-title">Продукція</h2>
+    <p class="section-sub">Повна лінійка розробок АЕРО ХАБ: наземні роботизовані комплекси, безпілотні літаючі апарати, засоби зв'язку та РЕБ. Оберіть потрібне і залиште заявку — ми зв'яжемось з вами.</p>
+
+    <nav class="lineup-cat-nav">
+      <a href="#cat-ground">Наземні роботизовані комплекси</a>
+      <a href="#cat-air">Безпілотні літаючі апарати</a>
+      <a href="#cat-comms">Засоби зв'язку</a>
+      <a href="#cat-reb">РЕБ</a>
+    </nav>
+
+    <div class="lineup-category" id="cat-ground">
+      <div class="lineup-cat-head">
+        <span class="lineup-cat-icon">🤖</span>
+        <h3 class="lineup-cat-title">Наземні роботизовані комплекси</h3>
+      </div>
+      <p class="lineup-cat-desc">НРК закривають ключові потреби: гуманітарне й військове розмінування, логістика, евакуація, мінування. Навісне обладнання під цивільні та військові завдання, висока прохідність і ремонтопридатність.</p>
+      <div class="lineup-grid" id="grid-ground">
+        <!-- товари цієї категорії підвантажуються з Google Таблиці автоматично -->
+      </div>
+    </div>
+
+    <div class="lineup-category" id="cat-air">
+      <div class="lineup-cat-head">
+        <span class="lineup-cat-icon">✈</span>
+        <h3 class="lineup-cat-title">Безпілотні літаючі апарати</h3>
+      </div>
+      <p class="lineup-cat-desc">БПАК серії ПР-1 оснащені різним обладнанням для виконання як військових, так і навчальних операцій — розвідка, ураження цілі, доставка вантажу. Висока маневреність, точність у виконанні завдань і простота в управлінні та обслуговуванні.</p>
+      <div class="lineup-grid" id="grid-air">
+        <!-- товари цієї категорії підвантажуються з Google Таблиці автоматично -->
+      </div>
+    </div>
+
+    <div class="lineup-category" id="cat-comms">
+      <div class="lineup-cat-head">
+        <span class="lineup-cat-icon">📡</span>
+        <h3 class="lineup-cat-title">Засоби зв'язку</h3>
+      </div>
+      <p class="lineup-cat-desc">Комплекти зв'язку для будь-яких повітряних та наземних роботів і БПЛА — відеоканал (аналог/цифра) та канал керування, стійкий до РЕБ.</p>
+      <div class="lineup-grid" id="grid-comms">
+        <!-- товари цієї категорії підвантажуються з Google Таблиці автоматично -->
+      </div>
+    </div>
+
+    <div class="lineup-category" id="cat-reb">
+      <div class="lineup-cat-head">
+        <span class="lineup-cat-icon">📶</span>
+        <h3 class="lineup-cat-title">РЕБ</h3>
+      </div>
+      <p class="lineup-cat-desc">Засоби радіоелектронної боротьби — стаціонарні та мобільні комплекси для захисту від БПЛА і придушення зв'язку супротивника.</p>
+      <div class="lineup-grid" id="grid-reb">
+        <!-- товари цієї категорії підвантажуються з Google Таблиці автоматично -->
+      </div>
+    </div>
+
+    <p class="lineup-note">Для замовлення техніки скористайтесь формою нижче або зв'яжіться з нами напряму.</p>
+  </div>
+</section>
+
+<section class="section" id="news">
+  <div class="container">
+    <h2 class="section-title">Новини</h2>
+    <p class="section-sub">Останні новини та публікації про нашу команду й розробки. <a href="news.html" class="news-all-link">Усі новини →</a></p>
+    <div class="news-grid" id="newsGrid">
+      <article class="news-card">
+        <a href="news.html#news-1" class="news-img-wrap"><img src="images/news-vystavka.jpg" alt="АЕРО ХАБ на виставці «Технології захисту/ПожТех»" loading="lazy"></a>
+        <div class="news-card-body">
+        <div class="news-date">29 травня 2024</div>
+        <h3 class="news-title"><a href="news.html#news-1">AEROHUB на міжнародній спеціалізованій виставці «Технології захисту/ПожТех»</a></h3>
+        <p class="news-excerpt">Команда АЕРО ХАБ взяла участь у Міжнародній спеціалізованій виставці «Технології захисту/пожтех» та представила свої розробки керованих наземних платформ зі спеціальним оснащенням.</p>
+        <a class="news-link" href="news.html#news-1">Читати повністю →</a>
+        </div>
+      </article>
+      <article class="news-card">
+        <a href="news.html#news-2" class="news-img-wrap"><img src="images/kaban-1.jpg" alt="Дрон-сапер «Кабан»" loading="lazy"></a>
+        <div class="news-card-body">
+        <div class="news-date">21 березня 2024</div>
+        <h3 class="news-title"><a href="news.html#news-2">Український СТАРТАП: як працює дрон-сапер «КАБАН»</a></h3>
+        <p class="news-excerpt">Чотири потужних колеса, захищений корпус і можливість знімати розтяжки як на відкритій місцевості, так і в приміщеннях. У Харківській області саперні групи використовують наземний безпілотник «КАБАН».</p>
+        <a class="news-link" href="news.html#news-2">Читати повністю →</a>
+        </div>
+      </article>
+      <article class="news-card">
+        <a href="news.html#news-3" class="news-img-wrap"><img src="images/kaban-2.jpg" alt="Дрон «Кабан» на тестуванні" loading="lazy"></a>
+        <div class="news-card-body">
+        <div class="news-date">21 березня 2024</div>
+        <h3 class="news-title"><a href="news.html#news-3">З дроном «Кабаном»: винахідники з Києва показали новий спосіб розмінування</a></h3>
+        <p class="news-excerpt">В Україні активно шукають ідеї, які допоможуть полегшити та пришвидшити розмінування територій. Винахідники з Києва розробили дрон на дистанційному керуванні, який отримав назву «Кабан».</p>
+        <a class="news-link" href="news.html#news-3">Читати повністю →</a>
+        </div>
+      </article>
+      <article class="news-card">
+        <a href="news.html#news-4" class="news-img-wrap"><img src="images/news-kaban-boar.jpg" alt="Випробування наземного дрона «Кабан»" loading="lazy"></a>
+        <div class="news-card-body">
+        <div class="news-date">13 березня 2024</div>
+        <h3 class="news-title"><a href="news.html#news-4">Допомога на нулі: українські військові провели випробування наземного дрона «Кабан» (BOAR)</a></h3>
+        <p class="news-excerpt">Україна продовжує розвивати свої військові технології, щоб забезпечити безпеку та ефективність військових операцій. Нещодавно в країні пройшли успішні випробування роботизованих наземних платформ — розробок кластера Brave1.</p>
+        <a class="news-link" href="news.html#news-4">Читати повністю →</a>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt" id="media">
+  <div class="container">
+    <h2 class="section-title">Медіа</h2>
+    <p class="section-sub">Фото з виробництва, польових випробувань та виставок.</p>
+    <div class="media-filter" id="mediaFilter">
+      <button type="button" class="active" data-cat="all">Усі</button>
+      <button type="button" data-cat="combat">Бойове застосування</button>
+      <button type="button" data-cat="production">Виробництво</button>
+      <button type="button" data-cat="exhibition">Виставка</button>
+    </div>
+    <div class="media-grid" id="mediaGrid">
+      <div class="media-card" data-cat="combat">
+        <img src="images/media-kaban-kharkiv.jpg" alt="Дрон Кабан (Харківська обл.)" loading="lazy">
+        <div class="media-card-caption">Дрон Кабан (Харківська обл.)</div>
+      </div>
+      <div class="media-card" data-cat="production">
+        <img src="images/media-workshop.jpg" alt="У цеху з виробництва" loading="lazy">
+        <div class="media-card-caption">У цеху з виробництва</div>
+      </div>
+      <div class="media-card" data-cat="production">
+        <img src="images/media-kaban-mod-1.jpg" alt="Модифікація дрон Кабан" loading="lazy">
+        <div class="media-card-caption">Модифікація дрон «Кабан»</div>
+      </div>
+      <div class="media-card" data-cat="production">
+        <img src="images/media-kaban-mod-2.jpg" alt="Саперний дрон-демінер Кабан модифікація" loading="lazy">
+        <div class="media-card-caption">Саперний дрон-демінер «Кабан», модифікація</div>
+      </div>
+      <div class="media-card" data-cat="production">
+        <img src="images/media-kaban-kamikaze-mod.jpg" alt="Модифікація дрон Кабан Камікадзе" loading="lazy">
+        <div class="media-card-caption">Модифікація дрон «Кабан Камікадзе»</div>
+      </div>
+      <div class="media-card" data-cat="exhibition">
+        <img src="images/media-exhibition-mvc.jpg" alt="На виставці в МВЦ" loading="lazy">
+        <div class="media-card-caption">На виставці в МВЦ</div>
+      </div>
+      <div class="media-card" data-cat="exhibition">
+        <img src="images/media-exhibition-mvc-2.jpg" alt="Демінер та камікадзе (МВЦ-2024)" loading="lazy">
+        <div class="media-card-caption">Демінер та камікадзе (МВЦ-2024)</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="partners">
+  <div class="container">
+    <h2 class="section-title">Партнери</h2>
+    <p class="section-sub">Організації та навчальні заклади, з якими співпрацює АЕРО ХАБ.</p>
+    <div class="partners-grid">
+      <div class="partner-card">
+        <div class="partner-card-img"><img src="images/partner-roboty-ua.jpg" alt="ТОВ «Роботи.ЮА»" loading="lazy"></div>
+        <div class="partner-card-name">Товариство з обмеженою відповідальністю «Роботи.ЮА»</div>
+      </div>
+      <div class="partner-card">
+        <div class="partner-card-img"><img src="images/partner-sport-university.png" alt="Національний університет фізичного виховання і спорту України" loading="lazy"></div>
+        <div class="partner-card-name">Національний університет фізичного виховання і спорту України</div>
+      </div>
+      <div class="partner-card">
+        <div class="partner-card-img"><img src="images/partner-kai.png" alt="Державний університет «Київський авіаційний інститут»" loading="lazy"></div>
+        <div class="partner-card-name">Державний університет «Київський авіаційний інститут»</div>
+      </div>
+      <div class="partner-card">
+        <div class="partner-card-img"><img src="images/partner-bioresources-university.png" alt="Національний університет біоресурсів і природокористування України" loading="lazy"></div>
+        <div class="partner-card-name">Національний університет біоресурсів і природокористування України</div>
+      </div>
+      <div class="partner-card">
+        <div class="partner-card-img"><img src="images/partner-kruk.png" alt="Центр підготовки операторів БПЛА «КРУК»" loading="lazy"></div>
+        <div class="partner-card-name">Центр підготовки операторів БПЛА «КРУК»</div>
+      </div>
+      <div class="partner-card">
+        <div class="partner-card-img"><img src="images/partner-vpp-invest.png" alt="ТОВ «ВПП ІНВЕСТ»" loading="lazy"></div>
+        <div class="partner-card-name">Товариство з обмеженою відповідальністю «ВПП ІНВЕСТ»</div>
+      </div>
+      <div class="partner-card">
+        <div class="partner-card-img"><img src="images/partner-kpk.png" alt="Київський професійний коледж з посиленою військовою та фізичною підготовкою" loading="lazy"></div>
+        <div class="partner-card-name">Київський професійний коледж з посиленою військовою та фізичною підготовкою</div>
+      </div>
+      <div class="partner-card">
+        <div class="partner-card-img"><img src="images/partner-stels.png" alt="ТОВ ТЦ «СТЕЛС»" loading="lazy"></div>
+        <div class="partner-card-name">Товариство з обмеженою відповідальністю ТЦ «СТЕЛС»</div>
+      </div>
+      <div class="partner-card">
+        <div class="partner-card-img"><img src="images/partner-veronius.png" alt="Благодійний фонд «ВЕРОНІУС»" loading="lazy"></div>
+        <div class="partner-card-name">Благодійний фонд «ВЕРОНІУС»</div>
+      </div>
+      <div class="partner-card">
+        <div class="partner-card-img"><img src="images/partner-fvs.png" alt="Громадська організація «Федерація військово-технологічного спорту України»" loading="lazy"></div>
+        <div class="partner-card-name">Громадська організація «Федерація військово-технологічного спорту України»</div>
+      </div>
+      <div class="partner-card">
+        <div class="partner-card-img"><img src="images/partner-for-ukrainians.png" alt="Благодійний фонд «Для українців»" loading="lazy"></div>
+        <div class="partner-card-name">Благодійний фонд «Для українців»</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt" id="contacts">
+  <div class="container">
+    <h2 class="section-title">Контакти</h2>
+    <div class="contacts-grid" id="contactsGrid"></div>
+    <div class="socials" id="socialsRow"></div>
+  </div>
+</section>
+
+<section class="section" id="order">
+  <div class="container">
+    <h2 class="section-title">Замовити</h2>
+    <p class="section-sub">Заповніть форму — і ми зв'яжемось з вами найближчим часом.</p>
+    <form id="orderForm">
+      <label>Ім'я
+        <input type="text" name="name" required placeholder="Як до вас звертатись">
+      </label>
+      <label>Телефон
+        <input type="tel" name="phone" required placeholder="+380 XX XXX XX XX">
+      </label>
+      <label>Товар
+        <select name="product" id="productSelect">
+          <option value="">Оберіть товар (необов'язково)</option>
+        </select>
+      </label>
+      <label>Коментар
+        <textarea name="comment" placeholder="Додаткові побажання"></textarea>
+      </label>
+      <button type="submit" class="btn" id="submitBtn">Надіслати заявку</button>
+      <div class="form-msg" id="formMsg"></div>
+    </form>
+  </div>
+</section>
+
+<footer>
+  <div id="footerText">© 2026 АЕРО ХАБ. Усі права захищено.</div>
+</footer>
+
+<div class="lightbox" id="lightbox">
+  <button type="button" class="lightbox-close" id="lightboxClose" aria-label="Закрити">×</button>
+  <button type="button" class="lightbox-prev" id="lightboxPrev" aria-label="Попереднє фото">‹</button>
+  <img id="lightboxImg" src="" alt="">
+  <button type="button" class="lightbox-next" id="lightboxNext" aria-label="Наступне фото">›</button>
+</div>
+
+<script>
+/* =======================================================================
+   НАЛАШТУВАННЯ
+   Встав сюди посилання на свій Apps Script Web App (див. інструкцію README).
+   Поки посилання немає — сайт показує демо-дані нижче, щоб можна було
+   одразу перевірити, як усе виглядає.
+   ======================================================================= */
+  const API_URL = "https://script.google.com/macros/s/AKfycbydsydAZ5BDpGLpFiCcYqUsqi2wtNWKtLpikoI86KlhacZFeQ5hoVDDGGv9-HFziu_zaQ/exec"; // <-- встав сюди URL розгорнутого Apps Script
+
+  const DEMO_DATA = {
+    settings: {
+      site_name: "АЕРО ХАБ",
+      hero_title: "Дрони, які працюють на результат",
+      hero_subtitle: "Розробляємо, виробляємо та впроваджуємо безпілотні літальні апарати для агросектору, моніторингу та логістики.",
+      about_text: "«АЕРО ХАБ» — українська команда інженерів і розробників, яка спеціалізується на створенні дронів під конкретні задачі клієнта: від аграрного моніторингу до картографування та логістики. Ми поєднуємо власне виробництво, тестування та технічну підтримку, щоб кожен дрон надійно працював у реальних умовах.",
+      about_photo_url: "",
+      phone: "+380 67 123 45 67",
+      email: "robotics.laboratory.ua@gmail.com",
+      address: "м. Київ, Україна",
+      instagram: "",
+      telegram: "",
+      footer_text: "© 2026 АЕРО ХАБ. Усі права захищено."
+    },
+    products: [
+      {id:1, name:"Товар 1", price:"500 грн", description:"Короткий опис товару 1.", image_url:"https://placehold.co/400x300?text=Фото+1,https://placehold.co/400x300?text=Фото+2,https://placehold.co/400x300?text=Фото+3", active:"yes"},
+      {id:2, name:"Товар 2", price:"750 грн", description:"Короткий опис товару 2.", image_url:"https://placehold.co/400x300?text=Товар+2", active:"yes"},
+      {id:3, name:"Товар 3", price:"1200 грн", description:"Короткий опис товару 3.", image_url:"https://placehold.co/400x300?text=Товар+3", active:"yes"}
+    ]
+  };
+
+  let STATE = { settings: {}, products: [] };
+
+  function esc(str){
+    const d = document.createElement('div');
+    d.innerText = (str ?? "").toString();
+    return d.innerHTML;
+  }
+
+  function applySettings(s){
+    document.title = s.site_name || "АЕРО ХАБ";
+    const logoImg = document.querySelector('#siteLogo img');
+    if(logoImg) logoImg.alt = s.site_name || "АЕРО ХАБ";
+    document.getElementById('heroTitle').textContent = s.hero_title || s.site_name || "Дрони, які працюють на результат";
+    document.getElementById('heroSubtitle').textContent = s.hero_subtitle || "";
+    document.getElementById('aboutText').textContent = s.about_text || "";
+    if(s.about_photo_url){
+      const img = document.getElementById('aboutPhoto');
+      img.src = s.about_photo_url;
+      img.style.display = "block";
+    }
+    document.getElementById('footerText').textContent = s.footer_text || "© " + new Date().getFullYear() + " " + (s.site_name || "");
+
+    const contactsGrid = document.getElementById('contactsGrid');
+    contactsGrid.innerHTML = "";
+    const items = [];
+    if(s.phone) items.push({label:"Телефон", value:String(s.phone), href:"tel:"+String(s.phone).replace(/[^\d+]/g,"")});
+    if(s.email) items.push({label:"Email", value:String(s.email), href:"mailto:"+String(s.email)});
+    if(s.address) items.push({label:"Адреса", value:String(s.address), href:null});
+    items.forEach(it=>{
+      const div = document.createElement('div');
+      div.className = "contact-item";
+      div.innerHTML = `<div class="label">${esc(it.label)}</div>${it.href ? `<a href="${it.href}">${esc(it.value)}</a>` : `<div>${esc(it.value)}</div>`}`;
+      contactsGrid.appendChild(div);
+    });
+
+    const socialsRow = document.getElementById('socialsRow');
+    socialsRow.innerHTML = "";
+    if(s.instagram) socialsRow.innerHTML += `<a href="${s.instagram}" target="_blank" rel="noopener">Instagram</a>`;
+    if(s.telegram) socialsRow.innerHTML += `<a href="${s.telegram}" target="_blank" rel="noopener">Telegram</a>`;
+  }
+
+  /** Визначає, до якої з 4 категорій лінійки продукції належить товар з таблиці */
+  /** Категорії, які підтримує сайт (мають відповідний grid-* блок у розмітці) */
+  const KNOWN_CATEGORIES = ['ground', 'air', 'comms', 'reb'];
+
+  /** Резервне визначення категорії за назвою товару — використовується лише
+   *  якщо в таблиці для товару не заповнена колонка "category". */
+  function classifyCategory(name){
+    const n = (name || "").toLowerCase();
+    if(n.includes('реб')) return 'reb';
+    if(n.includes('тетрис') || n.includes('tetris') || n.includes('кабан') || n.includes('нрк')) return 'ground';
+    if(n.includes('антена') || n.includes('патч') || n.includes('зв\'язок') || n.includes('зв’язок')) return 'comms';
+    return 'air';
+  }
+
+  /** Розбиває значення клітинки "details" ("пункт 1 | пункт 2 | ...") на масив пунктів */
+  function parseDetails(raw){
+    return String(raw || "")
+      .split('|')
+      .map(s => s.trim())
+      .filter(Boolean);
+  }
+
+  function renderProducts(products){
+    const select = document.getElementById('productSelect');
+    select.innerHTML = '<option value="">Оберіть товар (необов\'язково)</option>';
+
+    // прибираємо картки, додані під час попереднього рендеру — усі товари підвантажуються з таблиці
+    document.querySelectorAll('.lineup-grid .lineup-card[data-catalog="1"]').forEach(el => el.remove());
+
+    const active = (products || []).filter(p => (p.active === undefined) || String(p.active).toLowerCase() !== "no");
+
+    active.forEach(p=>{
+      const images = parseImages(p.image_url);
+      const rawCat = String(p.category || "").trim().toLowerCase();
+      const cat = KNOWN_CATEGORIES.includes(rawCat) ? rawCat : classifyCategory(p.name);
+      const grid = document.getElementById('grid-' + cat);
+      if(!grid) return;
+
+      const priceText = (p.price && String(p.price).trim()) ? p.price : "Ціну уточнюйте";
+      const details = parseDetails(p.details);
+
+      const card = document.createElement('div');
+      card.className = "lineup-card";
+      card.dataset.catalog = "1";
+
+      let galleryHtml = "";
+      if(images.length > 0){
+        galleryHtml = `
+          <div class="lineup-img-wrap card-gallery">
+            <img class="card-img" src="${images[0]}" alt="${esc(p.name)}" loading="lazy">
+            ${images.length > 1 ? `
+              <button type="button" class="gal-btn gal-prev" aria-label="Попереднє фото">‹</button>
+              <button type="button" class="gal-btn gal-next" aria-label="Наступне фото">›</button>
+              <div class="gal-dots">${images.map((_,i)=>`<span class="dot${i===0 ? " active" : ""}" data-i="${i}"></span>`).join("")}</div>
+            ` : ""}
+          </div>`;
+      }
+
+      card.innerHTML = `
+        ${galleryHtml}
+        <div class="lineup-body">
+          <h4 class="lineup-name">${esc(p.name)}</h4>
+          <p class="lineup-teaser">${esc(p.description || "")}</p>
+          <p class="lineup-price">${esc(priceText)}</p>
+          ${details.length > 0 ? `
+            <details class="lineup-details">
+              <summary>Детальніше</summary>
+              <ul>${details.map(d => `<li>${esc(d)}</li>`).join("")}</ul>
+            </details>
+          ` : ""}
+          <button type="button" class="btn order-btn" data-name="${esc(p.name)}">Замовити</button>
+        </div>`;
+
+      // --- галерея фото (якщо їх більше однієї) ---
+      const galleryEl = card.querySelector('.card-gallery');
+      if(galleryEl){
+        let idx = 0;
+        const imgEl = galleryEl.querySelector('.card-img');
+        const dots = galleryEl.querySelectorAll('.dot');
+        const setIndex = (i) => {
+          idx = ((i % images.length) + images.length) % images.length;
+          imgEl.src = images[idx];
+          dots.forEach(d => d.classList.toggle('active', Number(d.dataset.i) === idx));
+        };
+        const prevBtn = galleryEl.querySelector('.gal-prev');
+        const nextBtn = galleryEl.querySelector('.gal-next');
+        if(prevBtn) prevBtn.addEventListener('click', (e) => { e.stopPropagation(); setIndex(idx - 1); });
+        if(nextBtn) nextBtn.addEventListener('click', (e) => { e.stopPropagation(); setIndex(idx + 1); });
+        dots.forEach(d => d.addEventListener('click', (e) => { e.stopPropagation(); setIndex(Number(d.dataset.i)); }));
+        imgEl.addEventListener('click', () => openLightbox(images, idx));
+      }
+
+      // --- кнопка "Замовити" на картці ---
+      card.querySelector('.order-btn').addEventListener('click', () => {
+        document.getElementById('productSelect').value = p.name;
+        document.getElementById('order').scrollIntoView({behavior:'smooth'});
+      });
+
+      grid.appendChild(card);
+
+      const opt = document.createElement('option');
+      opt.value = p.name;
+      opt.textContent = p.name + " — " + priceText;
+      select.appendChild(opt);
+    });
+  }
+
+  /** Перетворює значення клітинки image_url ("url1, url2, url3") у масив посилань */
+  function parseImages(raw){
+    return String(raw || "")
+      .split(/[,|\n]/)
+      .map(s => s.trim())
+      .filter(Boolean);
+  }
+
+  // ---- Лайтбокс (перегляд фото на весь екран) ----
+  let lightboxImages = [];
+  let lightboxIndex = 0;
+
+  function updateLightbox(){
+    document.getElementById('lightboxImg').src = lightboxImages[lightboxIndex];
+    const multi = lightboxImages.length > 1;
+    document.getElementById('lightboxPrev').style.display = multi ? 'flex' : 'none';
+    document.getElementById('lightboxNext').style.display = multi ? 'flex' : 'none';
+  }
+  function openLightbox(images, idx){
+    lightboxImages = images;
+    lightboxIndex = idx;
+    updateLightbox();
+    document.getElementById('lightbox').classList.add('open');
+  }
+  function closeLightbox(){
+    document.getElementById('lightbox').classList.remove('open');
+  }
+  document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
+  document.getElementById('lightbox').addEventListener('click', (e) => {
+    if(e.target.id === 'lightbox') closeLightbox();
+  });
+  document.getElementById('lightboxPrev').addEventListener('click', () => {
+    lightboxIndex = (lightboxIndex - 1 + lightboxImages.length) % lightboxImages.length;
+    updateLightbox();
+  });
+  document.getElementById('lightboxNext').addEventListener('click', () => {
+    lightboxIndex = (lightboxIndex + 1) % lightboxImages.length;
+    updateLightbox();
+  });
+  document.addEventListener('keydown', (e) => {
+    if(!document.getElementById('lightbox').classList.contains('open')) return;
+    if(e.key === 'Escape') closeLightbox();
+    if(e.key === 'ArrowLeft') document.getElementById('lightboxPrev').click();
+    if(e.key === 'ArrowRight') document.getElementById('lightboxNext').click();
+  });
+
+  async function loadData(){
+    if(!API_URL){
+      STATE = DEMO_DATA;
+      applySettings(STATE.settings);
+      renderProducts(STATE.products);
+      return;
+    }
+    try{
+      const res = await fetch(API_URL + "?action=data", {method:"GET"});
+      if(!res.ok) throw new Error("Bad response");
+      const data = await res.json();
+      STATE = {
+        settings: data.settings || {},
+        products: data.products || []
+      };
+      applySettings(STATE.settings);
+      renderProducts(STATE.products);
+    }catch(err){
+      console.error("Не вдалось завантажити дані з API, показую демо-дані:", err);
+      STATE = DEMO_DATA;
+      applySettings(STATE.settings);
+      renderProducts(STATE.products);
+    }
+  }
+
+  // ---- Мобільне меню ----
+  const burgerBtn = document.getElementById('burgerBtn');
+  const mobileMenu = document.getElementById('mobileMenu');
+  burgerBtn.addEventListener('click', () => mobileMenu.classList.toggle('open'));
+  mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => mobileMenu.classList.remove('open')));
+
+  // ---- Форма замовлення ----
+  const orderForm = document.getElementById('orderForm');
+  const formMsg = document.getElementById('formMsg');
+  const submitBtn = document.getElementById('submitBtn');
+
+  orderForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    formMsg.className = "form-msg";
+    const fd = new FormData(orderForm);
+    const payload = {
+      name: fd.get('name'),
+      phone: fd.get('phone'),
+      product: fd.get('product'),
+      comment: fd.get('comment')
+    };
+
+    if(!API_URL){
+      formMsg.textContent = "Демо-режим: форма поки не підключена до бекенду. Додайте API_URL, щоб заявки надходили вам.";
+      formMsg.classList.add('show','err');
+      return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Надсилаємо...";
+    try{
+      // text/plain уникає CORS preflight-запиту до Apps Script
+      await fetch(API_URL, {
+        method: "POST",
+        headers: {"Content-Type":"text/plain;charset=utf-8"},
+        body: JSON.stringify(payload)
+      });
+      formMsg.textContent = "Дякуємо! Заявку надіслано, ми скоро з'вяжемось з вами.";
+      formMsg.classList.add('show','ok');
+      orderForm.reset();
+    }catch(err){
+      console.error(err);
+      formMsg.textContent = "Щось пішло не так. Спробуйте, будь ласка, ще раз або напишіть нам напряму.";
+      formMsg.classList.add('show','err');
+    }finally{
+      submitBtn.disabled = false;
+      submitBtn.textContent = "Надіслати заявку";
+    }
+  });
+
+  // ---- Медіа: фільтр за категорією + лайтбокс ----
+  const mediaFilter = document.getElementById('mediaFilter');
+  const mediaCards = Array.from(document.querySelectorAll('#mediaGrid .media-card'));
+
+  if(mediaFilter){
+    mediaFilter.querySelectorAll('button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        mediaFilter.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const cat = btn.dataset.cat;
+        mediaCards.forEach(card => {
+          const show = (cat === 'all') || (card.dataset.cat === cat);
+          card.classList.toggle('hidden', !show);
+        });
+      });
+    });
+  }
+
+  mediaCards.forEach(card => {
+    const img = card.querySelector('img');
+    if(img){
+      card.addEventListener('click', () => openLightbox([img.getAttribute('src')], 0));
+    }
+  });
+
+  loadData();
+</script>
+
+</body>
+</html>

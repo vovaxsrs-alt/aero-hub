@@ -1,0 +1,4 @@
+id,name,price,description,image_url,active,category,details
+1,Товар 1,500 грн,Короткий опис товару 1.,"https://placehold.co/400x300?text=Фото+1,https://placehold.co/400x300?text=Фото+2",yes,ground,
+2,Товар 2,750 грн,Короткий опис товару 2.,https://placehold.co/400x300?text=Товар+2,yes,air,
+3,Товар 3,,Короткий опис товару 3.,https://placehold.co/400x300?text=Товар+3,yes,comms,"Пункт специфікації 1 | Пункт специфікації 2 | Пункт специфікації 3"
