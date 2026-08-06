@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TETRIS 40кг/40км — наземний роботизований комплекс — АЕРО ХАБ</title>
+<meta name="description" content="TETRIS 40кг/40км — компактний наземний роботизований комплекс АЕРО ХАБ для логістичних, розвідувальних та мінувальних завдань.">
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<style>
+  :root{
+    --bg:#faf9f7;
+    --bg-alt:#ffffff;
+    --text:#20241f;
+    --text-muted:#5b6259;
+    --accent:#2f6b4f;
+    --accent-dark:#234f3b;
+    --accent-light:#e7f1ec;
+    --border:#e4e2dd;
+    --radius:14px;
+    --shadow:0 4px 18px rgba(20,30,25,0.07);
+    --header-h:64px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.55;
+  }
+  section,article{scroll-margin-top:var(--header-h);}
+  img{max-width:100%;display:block;}
+  a{color:inherit;}
+  .container{
+    width:100%;
+    max-width:1080px;
+    margin:0 auto;
+    padding:0 20px;
+  }
+
+  /* ---------- HEADER / NAV ---------- */
+  header{
+    position:sticky;
+    top:0;
+    z-index:100;
+    height:var(--header-h);
+    background:rgba(250,249,247,0.92);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--border);
+  }
+  .nav-inner{
+    height:var(--header-h);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .logo{
+    font-weight:700;
+    font-size:1.15rem;
+    letter-spacing:.2px;
+    text-decoration:none;
+    color:var(--accent-dark);
+    white-space:nowrap;
+    display:inline-flex;
+    align-items:center;
+  }
+  .logo img{
+    height:32px;
+    width:auto;
+    display:block;
+  }
+  nav.links{
+    display:flex;
+    gap:6px;
+  }
+  nav.links a{
+    text-decoration:none;
+    font-size:.95rem;
+    font-weight:500;
+    color:var(--text);
+    padding:8px 14px;
+    border-radius:999px;
+    transition:background .15s ease, color .15s ease;
+  }
+  nav.links a:hover{background:var(--accent-light);color:var(--accent-dark);}
+  nav.links a.current{color:var(--accent-dark);background:var(--accent-light);}
+  .nav-dropdown{
+    position:relative;
+    display:flex;
+    align-items:center;
+  }
+  .nav-dropdown-menu{
+    position:absolute;
+    top:100%;
+    left:0;
+    background:var(--bg-alt);
+    border:1px solid var(--border);
+    border-radius:12px;
+    box-shadow:var(--shadow);
+    min-width:260px;
+    padding:8px;
+    margin-top:6px;
+    opacity:0;
+    visibility:hidden;
+    transform:translateY(6px);
+    transition:opacity .15s ease, transform .15s ease, visibility .15s;
+    z-index:200;
+  }
+  .nav-dropdown:hover .nav-dropdown-menu,
+  .nav-dropdown:focus-within .nav-dropdown-menu{
+    opacity:1;
+    visibility:visible;
+    transform:translateY(0);
+  }
+  .nav-dropdown-menu a{
+    display:block;
+    padding:10px 12px;
+    border-radius:8px;
+    font-size:.88rem;
+    font-weight:500;
+    color:var(--text);
+    text-decoration:none;
+    white-space:nowrap;
+  }
+  .nav-dropdown-menu a:hover{
+    background:var(--accent-light);
+    color:var(--accent-dark);
+  }
+  .mobile-submenu{
+    font-size:.85rem !important;
+    font-weight:400 !important;
+    color:var(--text-muted) !important;
+    padding-left:36px !important;
+    border-top:none !important;
+  }
+  .burger{
+    display:none;
+    background:none;
+    border:none;
+    cursor:pointer;
+    padding:8px;
+    width:44px;
+    height:44px;
+    align-items:center;
+    justify-content:center;
+  }
+  .burger span,.burger span::before,.burger span::after{
+    content:"";
+    display:block;
+    width:22px;
+    height:2px;
+    background:var(--text);
+    position:relative;
+    transition:.2s;
+  }
+  .burger span::before{position:absolute;top:-7px;}
+  .burger span::after{position:absolute;top:7px;}
+  .mobile-menu{
+    display:none;
+    flex-direction:column;
+    background:var(--bg-alt);
+    border-bottom:1px solid var(--border);
+    box-shadow:var(--shadow);
+  }
+  .mobile-menu a{
+    text-decoration:none;
+    color:var(--text);
+    padding:14px 20px;
+    border-top:1px solid var(--border);
+    font-weight:500;
+  }
+  .mobile-menu.open{display:flex;}
+
+  @media (max-width:720px){
+    nav.links{display:none;}
+    .burger{display:flex;}
+  }
+
+  .btn{
+    display:inline-block;
+    background:var(--accent);
+    color:#fff;
+    text-decoration:none;
+    padding:13px 28px;
+    border-radius:999px;
+    font-weight:600;
+    font-size:1rem;
+    border:none;
+    cursor:pointer;
+  }
+  .btn:hover{background:var(--accent-dark);}
+  .btn:active{transform:scale(.98);}
+  .btn-outline{
+    background:transparent;
+    color:var(--accent-dark);
+    border:1.5px solid var(--accent);
+  }
+  .btn-outline:hover{background:var(--accent-light);}
+
+  /* ---------- PAGE HEAD ---------- */
+  .page-hero{
+    padding:44px 0 28px;
+    text-align:center;
+  }
+  .page-hero .eyebrow{
+    color:var(--accent);
+    font-weight:700;
+    font-size:.9rem;
+    letter-spacing:.4px;
+    text-transform:uppercase;
+    margin-bottom:8px;
+  }
+  .page-hero h1{
+    font-size:clamp(1.9rem,5vw,2.6rem);
+    margin:0 0 10px;
+    color:var(--accent-dark);
+  }
+  .page-hero p{
+    color:var(--text-muted);
+    max-width:640px;
+    margin:0 auto;
+    font-size:1.05rem;
+  }
+  .back-link{
+    display:inline-block;
+    margin:22px 0 0;
+    color:var(--accent);
+    font-weight:600;
+    text-decoration:none;
+    font-size:.92rem;
+  }
+  .back-link:hover{text-decoration:underline;}
+
+  /* ---------- GALLERY ---------- */
+  .product-gallery{
+    padding:8px 0 12px;
+  }
+  .gallery-main{
+    width:100%;
+    aspect-ratio:4/3;
+    max-height:560px;
+    border-radius:var(--radius);
+    overflow:hidden;
+    box-shadow:var(--shadow);
+    background:var(--accent-light);
+    cursor:pointer;
+    margin-bottom:14px;
+  }
+  .gallery-main img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+  }
+  .gallery-thumbs{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(84px,1fr));
+    gap:10px;
+  }
+  .gallery-thumbs button{
+    padding:0;
+    border:2px solid transparent;
+    border-radius:10px;
+    overflow:hidden;
+    aspect-ratio:1/1;
+    background:var(--accent-light);
+    cursor:pointer;
+  }
+  .gallery-thumbs button.active{border-color:var(--accent);}
+  .gallery-thumbs img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+  }
+
+  /* ---------- PRODUCT CONTENT ---------- */
+  .product-layout{
+    display:grid;
+    grid-template-columns:1.15fr .85fr;
+    gap:48px;
+    align-items:start;
+    padding:16px 0 72px;
+  }
+  @media (max-width:860px){
+    .product-layout{grid-template-columns:1fr;}
+  }
+  .product-lead{
+    font-size:1.08rem;
+    color:var(--text);
+    margin:0 0 8px;
+  }
+  .product-price-box{
+    background:var(--bg-alt);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:22px 24px;
+    margin-bottom:24px;
+    position:sticky;
+    top:calc(var(--header-h) + 16px);
+  }
+  .product-price-box .price{
+    font-size:1.3rem;
+    font-weight:700;
+    color:var(--accent-dark);
+    margin:0 0 4px;
+  }
+  .product-price-box .price-note{
+    color:var(--text-muted);
+    font-size:.88rem;
+    margin:0 0 16px;
+  }
+  .product-price-box .btn{width:100%;text-align:center;}
+  .product-section{margin:0 0 34px;}
+  .product-section h2{
+    font-size:1.25rem;
+    color:var(--accent-dark);
+    margin:0 0 14px;
+    padding-bottom:10px;
+    border-bottom:1px solid var(--border);
+  }
+  .product-section ul{
+    margin:0;
+    padding-left:22px;
+  }
+  .product-section li{margin-bottom:9px;}
+  .product-section li:last-child{margin-bottom:0;}
+  .sub-note{
+    margin:14px 0 0;
+    padding-top:14px;
+    border-top:1px dashed var(--border);
+    color:var(--text-muted);
+    font-size:.95rem;
+  }
+  .sub-note strong{color:var(--text);font-weight:600;}
+  .spec-table{
+    width:100%;
+    border-collapse:collapse;
+  }
+  .spec-table tr{border-bottom:1px solid var(--border);}
+  .spec-table tr:last-child{border-bottom:none;}
+  .spec-table th,.spec-table td{
+    text-align:left;
+    padding:10px 4px;
+    font-weight:400;
+    vertical-align:top;
+  }
+  .spec-table th{
+    color:var(--text-muted);
+    font-weight:500;
+    width:56%;
+  }
+  .spec-table td{
+    font-weight:600;
+    color:var(--text);
+  }
+
+  /* ---------- LIGHTBOX (перегляд фото на весь екран) ---------- */
+  .lightbox{
+    position:fixed;
+    inset:0;
+    background:rgba(10,15,12,0.92);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:1000;
+    padding:20px;
+  }
+  .lightbox.open{display:flex;}
+  .lightbox img{
+    max-width:90vw;
+    max-height:85vh;
+    border-radius:10px;
+    display:block;
+  }
+  .lightbox-close{
+    position:absolute;
+    top:16px;
+    right:20px;
+    background:none;
+    border:none;
+    color:#fff;
+    font-size:2.2rem;
+    cursor:pointer;
+    line-height:1;
+  }
+  .lightbox-prev,.lightbox-next{
+    position:absolute;
+    top:50%;
+    transform:translateY(-50%);
+    background:rgba(255,255,255,0.15);
+    color:#fff;
+    border:none;
+    width:44px;
+    height:44px;
+    border-radius:50%;
+    font-size:1.6rem;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .lightbox-prev:hover,.lightbox-next:hover,.lightbox-close:hover{background:rgba(255,255,255,0.15);}
+  .lightbox-prev{left:12px;}
+  .lightbox-next{right:12px;}
+  @media (max-width:600px){
+    .lightbox-prev{left:4px;}
+    .lightbox-next{right:4px;}
+  }
+
+  /* ---------- FOOTER ---------- */
+  footer{
+    text-align:center;
+    padding:28px 20px 40px;
+    color:var(--text-muted);
+    font-size:.85rem;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container nav-inner">
+    <a href="index.html#top" class="logo"><img src="at-aero_3_2.png" alt="АЕРО ХАБ"></a>
+    <nav class="links">
+      <a href="index.html#about">Про нас</a>
+      <div class="nav-dropdown">
+        <a href="index.html#products" class="current">Продукція ▾</a>
+        <div class="nav-dropdown-menu">
+          <a href="index.html#cat-ground">Наземні роботизовані комплекси</a>
+          <a href="index.html#cat-air">Безпілотні літаючі апарати</a>
+          <a href="index.html#cat-comms">Засоби зв'язку</a>
+          <a href="index.html#cat-reb">РЕБ</a>
+        </div>
+      </div>
+      <a href="news.html">Новини</a>
+      <a href="index.html#media">Медіа</a>
+      <a href="index.html#partners">Партнери</a>
+      <a href="index.html#contacts">Контакти</a>
+      <a href="index.html#order">Замовити</a>
+    </nav>
+    <button class="burger" id="burgerBtn" aria-label="Меню"><span></span></button>
+  </div>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="index.html#about">Про нас</a>
+    <a href="index.html#products">Продукція</a>
+    <a href="index.html#cat-ground" class="mobile-submenu">— Наземні роботизовані комплекси</a>
+    <a href="index.html#cat-air" class="mobile-submenu">— Безпілотні літаючі апарати</a>
+    <a href="index.html#cat-comms" class="mobile-submenu">— Засоби зв'язку</a>
+    <a href="index.html#cat-reb" class="mobile-submenu">— РЕБ</a>
+    <a href="news.html">Новини</a>
+    <a href="index.html#media">Медіа</a>
+    <a href="index.html#partners">Партнери</a>
+    <a href="index.html#contacts">Контакти</a>
+    <a href="index.html#order">Замовити</a>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="container">
+    <div class="eyebrow">Наземні роботизовані комплекси</div>
+    <h1>TETRIS 40кг/40км</h1>
+    <p>Компактний наземний роботизований комплекс малого розміру для логістичних, розвідувальних та мінувальних завдань.</p>
+    <a href="index.html#cat-ground" class="back-link">← До всіх наземних комплексів</a>
+  </div>
+</section>
+
+<section class="product-gallery">
+  <div class="container">
+    <div class="gallery-main" id="galleryMain">
+      <img id="galleryMainImg" src="images/tetris-1.jpg" alt="TETRIS 40кг/40км">
+    </div>
+    <div class="gallery-thumbs" id="galleryThumbs"></div>
+  </div>
+</section>
+
+<section>
+  <div class="container product-layout">
+
+    <div class="product-main">
+
+      <div class="product-section">
+        <h2>Опис</h2>
+        <p class="product-lead">TETRIS — компактний наземний роботизований комплекс (НРК) малого розміру, створений для логістичних, розвідувальних та мінувальних завдань там, де важлива прохідність, невеликі габарити та швидка адаптація під конкретну задачу.</p>
+      </div>
+
+      <div class="product-section">
+        <h2>Основні сценарії використання</h2>
+        <ul>
+          <li>Логістика / камікадзе-доставка з вантажем до 40 кг</li>
+          <li>Транспортування причепа вагою 110 кг з ношами</li>
+          <li>Транспортування засобу РЕБ «Колискова» на 10 діапазонів</li>
+          <li>Розчищення стежки від протипіхотних мін за допомогою мінного трала та щупа для зняття розтяжок</li>
+          <li>Мінування — скид 3 шт. ТМ-62</li>
+          <li>Розвідка та охорона периметру з ідентифікацією</li>
+          <li>Платформа для запуску БПЛА</li>
+        </ul>
+      </div>
+
+      <div class="product-section">
+        <h2>Зв'язок</h2>
+        <ul>
+          <li>Аналогове відео 5,8 ГГц — до 4 км по пересіченій місцевості з наземною станцією</li>
+          <li>Керування 915 МГц — до 6 км по пересіченій місцевості з наземною станцією</li>
+          <li>Опційно — оптоволокно, до 40 км</li>
+          <li>Опційно — Starlink</li>
+        </ul>
+      </div>
+
+      <div class="product-section">
+        <h2>Особливості</h2>
+        <ul>
+          <li>Транспортування вантажу до 40 кг на відстань до 40 км</li>
+          <li>Передня ходова частина значно полегшує подолання перешкод, вищих за раму НРК</li>
+          <li>Мінімальні кути розвороту — висока маневреність у складних умовах</li>
+          <li>Багатоцільовий, легкий, потужний та невибагливий в обслуговуванні</li>
+        </ul>
+      </div>
+
+      <div class="product-section">
+        <h2>Комплектація</h2>
+        <ul>
+          <li>Дрон, пульт керування, монітор 7''</li>
+          <li>Зарядний пристрій 10 А·год</li>
+          <li>Інструкція з експлуатації</li>
+        </ul>
+        <div class="sub-note">
+          <strong>Опційно:</strong> наземна станція, Starlink, додатковий акумулятор, причіп, нічна камера, скид для 3х ТМ, щуп для зняття розтяжок.
+        </div>
+      </div>
+
+      <div class="product-section">
+        <h2>Фізичні характеристики</h2>
+        <table class="spec-table">
+          <tr><th>Розміри</th><td>800 × 600 × 500 мм</td></tr>
+          <tr><th>Вага платформи</th><td>50 кг</td></tr>
+          <tr><th>Вантажопідйомність (рекомендована)</th><td>до 50 кг</td></tr>
+          <tr><th>Вантажопідйомність причепа (рекомендована)</th><td>до 110 кг</td></tr>
+          <tr><th>Дальність ходу</th><td>до 40 км</td></tr>
+          <tr><th>Дальність ходу з додатковим акумулятором</th><td>до 70 км</td></tr>
+        </table>
+      </div>
+
+    </div>
+
+    <aside class="product-aside">
+      <div class="product-price-box">
+        <p class="price">Ціну уточнюйте</p>
+        <p class="price-note">Індивідуальний прорахунок залежно від комплектації</p>
+        <a href="index.html?product=TETRIS%2040%D0%BA%D0%B3%2F40%D0%BA%D0%BC#order" class="btn" id="orderBtn">Замовити TETRIS</a>
+      </div>
+    </aside>
+
+  </div>
+</section>
+
+<div class="lightbox" id="lightbox">
+  <button type="button" class="lightbox-close" id="lightboxClose" aria-label="Закрити">×</button>
+  <button type="button" class="lightbox-prev" id="lightboxPrev" aria-label="Попереднє фото">‹</button>
+  <img id="lightboxImg" src="" alt="">
+  <button type="button" class="lightbox-next" id="lightboxNext" aria-label="Наступне фото">›</button>
+</div>
+
+<footer>
+  <div>© 2026 АЕРО ХАБ. Усі права захищено.</div>
+</footer>
+
+<script>
+  // ---- Мобільне меню ----
+  const burgerBtn = document.getElementById('burgerBtn');
+  const mobileMenu = document.getElementById('mobileMenu');
+  burgerBtn.addEventListener('click', () => mobileMenu.classList.toggle('open'));
+  mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => mobileMenu.classList.remove('open')));
+
+  // ---- Галерея фото товару ----
+  const GALLERY_IMAGES = [
+    'images/tetris-1.jpg',
+    'images/tetris-2.jpg',
+    'images/tetris-3.jpg',
+    'images/tetris-4.jpg',
+    'images/tetris-5.jpg',
+    'images/tetris-6.jpg',
+    'images/tetris-7.jpg',
+    'images/tetris-8.jpg',
+    'images/tetris-9.jpg',
+    'images/tetris-10.jpg'
+  ];
+
+  const galleryMainImg = document.getElementById('galleryMainImg');
+  const galleryThumbs = document.getElementById('galleryThumbs');
+  let galleryIndex = 0;
+
+  function setGalleryIndex(i){
+    galleryIndex = ((i % GALLERY_IMAGES.length) + GALLERY_IMAGES.length) % GALLERY_IMAGES.length;
+    galleryMainImg.src = GALLERY_IMAGES[galleryIndex];
+    galleryThumbs.querySelectorAll('button').forEach((b, idx) => b.classList.toggle('active', idx === galleryIndex));
+  }
+
+  GALLERY_IMAGES.forEach((src, idx) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = idx === 0 ? 'active' : '';
+    b.innerHTML = `<img src="${src}" alt="TETRIS — фото ${idx + 1}" loading="lazy">`;
+    b.addEventListener('click', () => setGalleryIndex(idx));
+    galleryThumbs.appendChild(b);
+  });
+
+  document.getElementById('galleryMain').addEventListener('click', () => openLightbox(GALLERY_IMAGES, galleryIndex));
+
+  // ---- Лайтбокс (перегляд фото на весь екран) ----
+  let lightboxImages = [];
+  let lightboxIndex = 0;
+  function updateLightbox(){
+    document.getElementById('lightboxImg').src = lightboxImages[lightboxIndex];
+    const multi = lightboxImages.length > 1;
+    document.getElementById('lightboxPrev').style.display = multi ? 'flex' : 'none';
+    document.getElementById('lightboxNext').style.display = multi ? 'flex' : 'none';
+  }
+  function openLightbox(images, idx){
+    lightboxImages = images;
+    lightboxIndex = idx;
+    updateLightbox();
+    document.getElementById('lightbox').classList.add('open');
+  }
+  function closeLightbox(){
+    document.getElementById('lightbox').classList.remove('open');
+  }
+  document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
+  document.getElementById('lightbox').addEventListener('click', (e) => {
+    if(e.target.id === 'lightbox') closeLightbox();
+  });
+  document.getElementById('lightboxPrev').addEventListener('click', () => {
+    lightboxIndex = (lightboxIndex - 1 + lightboxImages.length) % lightboxImages.length;
+    updateLightbox();
+  });
+  document.getElementById('lightboxNext').addEventListener('click', () => {
+    lightboxIndex = (lightboxIndex + 1) % lightboxImages.length;
+    updateLightbox();
+  });
+  document.addEventListener('keydown', (e) => {
+    if(!document.getElementById('lightbox').classList.contains('open')) return;
+    if(e.key === 'Escape') closeLightbox();
+    if(e.key === 'ArrowLeft') document.getElementById('lightboxPrev').click();
+    if(e.key === 'ArrowRight') document.getElementById('lightboxNext').click();
+  });
+</script>
+
+</body>
+</html>

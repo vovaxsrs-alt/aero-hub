@@ -314,6 +314,15 @@
     transform:translateY(-3px);
     box-shadow:0 10px 26px rgba(20,30,25,0.12);
   }
+  .lineup-card.has-detail{cursor:pointer;}
+  .lineup-name-link{
+    color:inherit;
+    text-decoration:none;
+  }
+  .lineup-name-link:hover{
+    color:var(--accent-dark);
+    text-decoration:underline;
+  }
   .lineup-img-wrap{
     width:100%;
     aspect-ratio:4/3;
@@ -1308,10 +1317,12 @@
           </div>`;
       }
 
+      const detailUrl = String(p.detail_url || "").trim();
+
       card.innerHTML = `
         ${galleryHtml}
         <div class="lineup-body">
-          <h4 class="lineup-name">${esc(p.name)}</h4>
+          <h4 class="lineup-name">${detailUrl ? `<a href="${esc(detailUrl)}" class="lineup-name-link">${esc(p.name)}</a>` : esc(p.name)}</h4>
           <p class="lineup-teaser">${esc(p.description || "")}</p>
           <p class="lineup-price">${esc(priceText)}</p>
           ${details.length > 0 ? `
@@ -1347,6 +1358,15 @@
         document.getElementById('productSelect').value = p.name;
         document.getElementById('order').scrollIntoView({behavior:'smooth'});
       });
+
+      // --- клік по картці товару відкриває сторінку з детальним описом (якщо вона є) ---
+      if(detailUrl){
+        card.classList.add('has-detail');
+        card.addEventListener('click', (e) => {
+          if(e.target.closest('.card-gallery') || e.target.closest('.order-btn') || e.target.closest('.lineup-details')) return;
+          window.location.href = detailUrl;
+        });
+      }
 
       grid.appendChild(card);
 
@@ -1503,7 +1523,21 @@
     }
   });
 
-  loadData();
+  // ---- Преселект товару за параметром ?product=... (для переходу зі сторінки товару) ----
+  function applyProductParam(){
+    const params = new URLSearchParams(window.location.search);
+    const productName = params.get('product');
+    if(!productName) return;
+    const select = document.getElementById('productSelect');
+    const opt = Array.from(select.options).find(o => o.value === productName);
+    if(opt){
+      select.value = productName;
+      const order = document.getElementById('order');
+      if(order) order.scrollIntoView({behavior:'smooth'});
+    }
+  }
+
+  loadData().then(applyProductParam);
 </script>
 
 </body>
