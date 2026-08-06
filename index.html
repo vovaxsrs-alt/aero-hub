@@ -201,6 +201,8 @@
     border-radius:999px;
     font-weight:600;
     font-size:1rem;
+    font-family:inherit;
+    line-height:1.2;
     border:none;
     cursor:pointer;
     transition:background .15s ease, transform .1s ease;
@@ -359,41 +361,45 @@
     font-size:.92rem;
     margin:0 0 10px;
   }
-  .lineup-details{
+  .lineup-actions{
     margin-top:auto;
     border-top:1px solid var(--border);
-    padding-top:10px;
-  }
-  .lineup-details summary{
-    cursor:pointer;
-    color:var(--accent);
-    font-weight:600;
-    font-size:.9rem;
-    list-style:none;
+    padding-top:12px;
     display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .lineup-actions .btn:not(:only-child){
+    flex:1 1 0;
+    text-align:center;
+    box-sizing:border-box;
+  }
+  .lineup-details-toggle{
+    display:inline-flex;
     align-items:center;
     gap:6px;
     user-select:none;
   }
-  .lineup-details summary::-webkit-details-marker{
-    display:none;
-  }
-  .lineup-details summary::after{
+  .lineup-details-toggle::after{
     content:"▾";
     transition:transform .18s ease;
     font-size:.8rem;
   }
-  .lineup-details[open] summary::after{
+  .lineup-details-toggle.open::after{
     transform:rotate(180deg);
   }
-  .lineup-details ul{
+  .lineup-details-list{
+    display:none;
     margin:10px 0 0;
     padding-left:18px;
     color:var(--text-muted);
     font-size:.88rem;
     line-height:1.55;
   }
-  .lineup-details ul li{
+  .lineup-details-list.open{
+    display:block;
+  }
+  .lineup-details-list li{
     margin-bottom:4px;
   }
   .lineup-note{
@@ -406,10 +412,8 @@
     cursor:zoom-in;
   }
   .lineup-body .btn{
-    align-self:flex-start;
     padding:9px 20px;
     font-size:.9rem;
-    margin-top:4px;
   }
   .lineup-cat-nav{
     display:flex;
@@ -1325,13 +1329,11 @@
           <h4 class="lineup-name">${detailUrl ? `<a href="${esc(detailUrl)}" class="lineup-name-link">${esc(p.name)}</a>` : esc(p.name)}</h4>
           <p class="lineup-teaser">${esc(p.description || "")}</p>
           <p class="lineup-price">${esc(priceText)}</p>
-          ${details.length > 0 ? `
-            <details class="lineup-details">
-              <summary>Детальніше</summary>
-              <ul>${details.map(d => `<li>${esc(d)}</li>`).join("")}</ul>
-            </details>
-          ` : ""}
-          <button type="button" class="btn order-btn" data-name="${esc(p.name)}">Замовити</button>
+          <div class="lineup-actions">
+            ${detailUrl ? `<a href="${esc(detailUrl)}" class="btn lineup-detail-link">Детальніше</a>` : (details.length > 0 ? `<button type="button" class="btn btn-outline lineup-details-toggle">Детальніше</button>` : "")}
+            <button type="button" class="btn order-btn" data-name="${esc(p.name)}">Замовити</button>
+          </div>
+          ${(!detailUrl && details.length > 0) ? `<ul class="lineup-details-list">${details.map(d => `<li>${esc(d)}</li>`).join("")}</ul>` : ""}
         </div>`;
 
       // --- галерея фото (якщо їх більше однієї) ---
@@ -1359,11 +1361,23 @@
         document.getElementById('order').scrollIntoView({behavior:'smooth'});
       });
 
+      // --- кнопка "Детальніше" — розгортає список характеристик ---
+      const detailsToggle = card.querySelector('.lineup-details-toggle');
+      const detailsList = card.querySelector('.lineup-details-list');
+      if(detailsToggle && detailsList){
+        detailsToggle.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const isOpen = detailsList.classList.toggle('open');
+          detailsToggle.classList.toggle('open', isOpen);
+          detailsToggle.textContent = isOpen ? 'Згорнути' : 'Детальніше';
+        });
+      }
+
       // --- клік по картці товару відкриває сторінку з детальним описом (якщо вона є) ---
       if(detailUrl){
         card.classList.add('has-detail');
         card.addEventListener('click', (e) => {
-          if(e.target.closest('.card-gallery') || e.target.closest('.order-btn') || e.target.closest('.lineup-details')) return;
+          if(e.target.closest('.card-gallery') || e.target.closest('.lineup-actions') || e.target.closest('.lineup-details-list')) return;
           window.location.href = detailUrl;
         });
       }
