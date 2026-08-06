@@ -6,6 +6,10 @@
 <title>АЕРО ХАБ</title>
 <meta name="description" content="Сайт-візитка з каталогом товарів">
 <link rel="icon" type="image/x-icon" href="favicon.ico">
+<link rel="preconnect" href="https://script.google.com">
+<link rel="dns-prefetch" href="https://script.google.com">
+<link rel="preconnect" href="https://script.googleusercontent.com">
+<link rel="dns-prefetch" href="https://script.googleusercontent.com">
 <style>
   :root{
     --bg:#faf9f7;
@@ -317,6 +321,37 @@
     box-shadow:0 10px 26px rgba(20,30,25,0.12);
   }
   .lineup-card.has-detail{cursor:pointer;}
+  .skeleton-card{
+    background:var(--bg-alt);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    overflow:hidden;
+    box-shadow:var(--shadow);
+  }
+  .skeleton-card .skeleton-img{
+    aspect-ratio:4/3;
+  }
+  .skeleton-card .skeleton-body{
+    padding:16px;
+  }
+  .skeleton-card .skeleton-line{
+    height:12px;
+    border-radius:6px;
+    margin-bottom:10px;
+  }
+  .skeleton-card .skeleton-line.w60{width:60%;}
+  .skeleton-card .skeleton-line.w90{width:90%;}
+  .skeleton-card .skeleton-line.w40{width:40%;margin-top:14px;}
+  .skeleton-img,
+  .skeleton-line{
+    background:linear-gradient(90deg, var(--border) 25%, var(--bg) 37%, var(--border) 63%);
+    background-size:400% 100%;
+    animation:skeleton-shimmer 1.4s ease infinite;
+  }
+  @keyframes skeleton-shimmer{
+    0%{background-position:100% 50%;}
+    100%{background-position:0 50%;}
+  }
   .lineup-name-link{
     color:inherit;
     text-decoration:none;
@@ -1201,6 +1236,12 @@
    ======================================================================= */
   const API_URL = "https://script.google.com/macros/s/AKfycbydsydAZ5BDpGLpFiCcYqUsqi2wtNWKtLpikoI86KlhacZFeQ5hoVDDGGv9-HFziu_zaQ/exec"; // <-- встав сюди URL розгорнутого Apps Script
 
+  // Кеш товарів у браузері — щоб при повторному візиті сайт показував
+  // товари миттєво (без очікування відповіді від Google Таблиці),
+  // а свіжі дані тихо підвантажувались і оновлювали список у фоні.
+  const CACHE_KEY = "aerohub_products_cache_v1";
+  const CACHE_MAX_AGE_MS = 12 * 60 * 60 * 1000; // 12 годин
+
   const DEMO_DATA = {
     settings: {
       site_name: "АЕРО ХАБ",
@@ -1285,12 +1326,56 @@
       .filter(Boolean);
   }
 
+  /** Показує "скелетони" карток одразу при завантаженні сторінки —
+   *  поки товари ще підвантажуються з Google Таблиці, замість порожнього
+   *  місця користувач бачить, що дані вже завантажуються. */
+  function renderSkeletons(){
+    KNOWN_CATEGORIES.forEach(cat => {
+      const grid = document.getElementById('grid-' + cat);
+      if(!grid) return;
+      for(let i = 0; i < 2; i++){
+        const sk = document.createElement('div');
+        sk.className = "skeleton-card";
+        sk.innerHTML = `
+          <div class="skeleton-img"></div>
+          <div class="skeleton-body">
+            <div class="skeleton-line w90"></div>
+            <div class="skeleton-line w60"></div>
+            <div class="skeleton-line w40"></div>
+          </div>`;
+        grid.appendChild(sk);
+      }
+    });
+  }
+
+  function readCache(){
+    try{
+      const raw = localStorage.getItem(CACHE_KEY);
+      if(!raw) return null;
+      const parsed = JSON.parse(raw);
+      if(!parsed || !parsed.data || !parsed.ts) return null;
+      if(Date.now() - parsed.ts > CACHE_MAX_AGE_MS) return null;
+      return parsed.data;
+    }catch(err){
+      return null; // приватний режим / сховище недоступне — просто без кешу
+    }
+  }
+
+  function writeCache(data){
+    try{
+      localStorage.setItem(CACHE_KEY, JSON.stringify({ data, ts: Date.now() }));
+    }catch(err){
+      // сховище недоступне — пропускаємо кешування, на роботу сайту не впливає
+    }
+  }
+
   function renderProducts(products){
     const select = document.getElementById('productSelect');
     select.innerHTML = '<option value="">Оберіть товар (необов\'язково)</option>';
 
     // прибираємо картки, додані під час попереднього рендеру — усі товари підвантажуються з таблиці
     document.querySelectorAll('.lineup-grid .lineup-card[data-catalog="1"]').forEach(el => el.remove());
+    document.querySelectorAll('.lineup-grid .skeleton-card').forEach(el => el.remove());
 
     const active = (products || []).filter(p => (p.active === undefined) || String(p.active).toLowerCase() !== "no");
 
@@ -1444,6 +1529,18 @@
       renderProducts(STATE.products);
       return;
     }
+
+    // Якщо є свіжий кеш — показуємо його миттєво (0 секунд очікування),
+    // а актуальні дані з таблиці підвантажуємо тихо у фоні нижче.
+    const cached = readCache();
+    if(cached){
+      STATE = cached;
+      applySettings(STATE.settings);
+      renderProducts(STATE.products);
+    }else{
+      renderSkeletons();
+    }
+
     try{
       const res = await fetch(API_URL + "?action=data", {method:"GET"});
       if(!res.ok) throw new Error("Bad response");
@@ -1454,11 +1551,15 @@
       };
       applySettings(STATE.settings);
       renderProducts(STATE.products);
+      writeCache(STATE);
     }catch(err){
       console.error("Не вдалось завантажити дані з API, показую демо-дані:", err);
-      STATE = DEMO_DATA;
-      applySettings(STATE.settings);
-      renderProducts(STATE.products);
+      if(!cached){
+        STATE = DEMO_DATA;
+        applySettings(STATE.settings);
+        renderProducts(STATE.products);
+      }
+      // якщо кеш вже показано — просто лишаємо його, картки не зникають
     }
   }
 
