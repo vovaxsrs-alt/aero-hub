@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<title>АЕРО ХАБ — Адмінка текстів сайту</title>
+<title>АЕРО ХАБ — Адмінка сайту</title>
 <style>
   :root{
     --accent:#2f6b4f;
@@ -15,6 +15,8 @@
     --border:#dfe3e0;
     --text:#1f2a24;
     --muted:#6b756f;
+    --danger:#8a2e1f;
+    --danger-light:#fbe9e7;
   }
   *{box-sizing:border-box;}
   body{
@@ -32,7 +34,7 @@
   }
   header span{opacity:.75;font-weight:400;font-size:14px;}
   main{
-    max-width:640px;
+    max-width:720px;
     margin:0 auto;
     padding:28px 16px 60px;
   }
@@ -44,6 +46,7 @@
     margin-bottom:20px;
   }
   h1{font-size:20px;margin:0 0 6px;}
+  h2{font-size:16px;margin:0;}
   p.hint{color:var(--muted);font-size:14px;margin:0 0 20px;line-height:1.5;}
   label{
     display:block;
@@ -53,7 +56,7 @@
     margin:16px 0 6px;
   }
   label.first{margin-top:0;}
-  input[type=text], input[type=password], textarea{
+  input[type=text], input[type=password], textarea, select{
     width:100%;
     padding:10px 12px;
     border:1.5px solid var(--border);
@@ -63,7 +66,7 @@
     color:var(--text);
     background:#fff;
   }
-  input:focus, textarea:focus{outline:none;border-color:var(--accent);}
+  input:focus, textarea:focus, select:focus{outline:none;border-color:var(--accent);}
   textarea{resize:vertical;min-height:80px;line-height:1.4;}
   .btn{
     display:inline-block;
@@ -79,6 +82,10 @@
   .btn:hover{background:var(--accent-dark);}
   .btn:disabled{opacity:.6;cursor:default;}
   .btn-block{width:100%;}
+  .btn-secondary{background:#fff;color:var(--accent-dark);border:1.5px solid var(--accent);}
+  .btn-secondary:hover{background:var(--accent-light);}
+  .btn-danger{background:#fff;color:var(--danger);border:1.5px solid var(--danger);padding:8px 16px;font-size:14px;}
+  .btn-danger:hover{background:var(--danger-light);}
   .msg{
     margin-top:14px;
     padding:10px 14px;
@@ -88,19 +95,41 @@
   }
   .msg.show{display:block;}
   .msg.ok{background:var(--accent-light);color:var(--accent-dark);}
-  .msg.err{background:#fbe9e7;color:#8a2e1f;}
+  .msg.err{background:var(--danger-light);color:var(--danger);}
   .field-row{display:flex;gap:12px;}
   .field-row > div{flex:1;}
   a.back-link{color:var(--accent-dark);font-size:14px;text-decoration:none;}
   a.back-link:hover{text-decoration:underline;}
-  #loading{color:var(--muted);font-size:14px;}
+  #loading, #productsLoadingHint{color:var(--muted);font-size:14px;}
   footer{text-align:center;color:var(--muted);font-size:12px;padding:20px;}
+
+  .product-card{
+    border:1.5px solid var(--border);
+    border-radius:10px;
+    margin-bottom:12px;
+    padding:0;
+    overflow:hidden;
+  }
+  .product-card > summary{
+    cursor:pointer;
+    padding:12px 14px;
+    font-weight:600;
+    background:#fafbfa;
+    list-style:none;
+  }
+  .product-card > summary::-webkit-details-marker{display:none;}
+  .product-card > summary::before{content:"▸ ";color:var(--muted);}
+  .product-card[open] > summary::before{content:"▾ ";}
+  .product-body{padding:4px 14px 16px;}
+  .product-card.marked-delete{border-color:var(--danger);opacity:.6;}
+  .product-card.marked-delete > summary{background:var(--danger-light);text-decoration:line-through;}
+  #productsList{margin-top:12px;}
 </style>
 </head>
 <body>
 
 <header>
-  АЕРО ХАБ <span>· Адмінка текстів сайту</span>
+  АЕРО ХАБ <span>· Адмінка сайту</span>
 </header>
 
 <main>
@@ -108,7 +137,7 @@
   <!-- Екран входу -->
   <div class="card" id="gateCard">
     <h1>Вхід</h1>
-    <p class="hint">Введи пароль, щоб редагувати тексти сайту (заголовки, «Про нас», контакти). Товари тут не редагуються — вони й далі в Google Таблиці.</p>
+    <p class="hint">Введи пароль, щоб редагувати тексти сайту й товари.</p>
     <form id="gateForm">
       <label class="first">Пароль</label>
       <input type="password" id="passwordInput" placeholder="Пароль адмінки" autocomplete="current-password">
@@ -118,7 +147,7 @@
     </form>
   </div>
 
-  <!-- Форма редагування (з'являється після входу) -->
+  <!-- Форма редагування текстів сайту (з'являється після входу) -->
   <div class="card" id="formCard" style="display:none;">
     <h1>Тексти сайту</h1>
     <p class="hint" id="loading">Завантажую поточні тексти з сайту…</p>
@@ -168,8 +197,24 @@
       <input type="text" id="footer_text">
 
       <br><br>
-      <button type="submit" class="btn btn-block" id="saveBtn">Зберегти</button>
+      <button type="submit" class="btn btn-block" id="saveBtn">Зберегти тексти</button>
       <div class="msg" id="saveMsg"></div>
+    </form>
+  </div>
+
+  <!-- Товари (з'являється після входу) -->
+  <div class="card" id="productsCard" style="display:none;">
+    <h1>Товари</h1>
+    <p class="hint" id="productsLoadingHint">Завантажую товари…</p>
+
+    <form id="productsForm" style="display:none;">
+      <div id="productsList"></div>
+
+      <button type="button" class="btn btn-secondary" id="addProductBtn">+ Додати новий товар</button>
+
+      <br><br>
+      <button type="submit" class="btn btn-block" id="productsSaveBtn">Зберегти товари</button>
+      <div class="msg" id="productsSaveMsg"></div>
     </form>
   </div>
 
@@ -187,10 +232,13 @@
     "phone","email","address","instagram","telegram","footer_text"
   ];
 
+  const PRODUCT_FIELDS = ["name","price","description","image_url","category","active","details","detail_url"];
+
   let adminPassword = "";
 
   const gateCard = document.getElementById('gateCard');
   const formCard = document.getElementById('formCard');
+  const productsCard = document.getElementById('productsCard');
   const gateBtn = document.getElementById('gateBtn');
   const passwordInput = document.getElementById('passwordInput');
   const gateMsg = document.getElementById('gateMsg');
@@ -199,21 +247,66 @@
   const saveBtn = document.getElementById('saveBtn');
   const saveMsg = document.getElementById('saveMsg');
 
+  const productsLoadingHint = document.getElementById('productsLoadingHint');
+  const productsForm = document.getElementById('productsForm');
+  const productsList = document.getElementById('productsList');
+  const addProductBtn = document.getElementById('addProductBtn');
+  const productsSaveBtn = document.getElementById('productsSaveBtn');
+  const productsSaveMsg = document.getElementById('productsSaveMsg');
+
   function showGateError(text){
     gateMsg.textContent = text;
     gateMsg.classList.add('show');
   }
+  function hideGateError(){
+    gateMsg.classList.remove('show');
+    gateMsg.textContent = "";
+  }
 
+  function escapeHtml(s){
+    return String(s == null ? "" : s)
+      .replace(/&/g,"&amp;")
+      .replace(/</g,"&lt;")
+      .replace(/>/g,"&gt;");
+  }
+  function escapeAttr(s){
+    return escapeHtml(s).replace(/"/g,"&quot;");
+  }
+
+  // Перевіряє пароль на сервері (без запису будь-яких даних) і, якщо він
+  // вірний, показує форми та підвантажує поточні дані. Якщо невірний —
+  // форми НЕ показуються.
   async function enterAdmin(){
     const pass = passwordInput.value.trim();
     if(!pass){
       showGateError("Введи пароль.");
       return;
     }
-    adminPassword = pass;
-    gateCard.style.display = "none";
-    formCard.style.display = "block";
-    await loadCurrentSettings();
+    hideGateError();
+    gateBtn.disabled = true;
+    gateBtn.textContent = "Перевіряю…";
+    try{
+      const res = await fetch(API_URL, {
+        method: "POST",
+        headers: {"Content-Type":"text/plain;charset=utf-8"},
+        body: JSON.stringify({ action: "admin_update", password: pass })
+      });
+      const result = await res.json();
+      if(result.ok){
+        adminPassword = pass;
+        gateCard.style.display = "none";
+        formCard.style.display = "block";
+        productsCard.style.display = "block";
+        await loadCurrentData();
+      }else{
+        showGateError("Невірний пароль. Спробуй ще раз.");
+      }
+    }catch(err){
+      showGateError("Не вдалось перевірити пароль. Перевір інтернет-з'єднання і спробуй ще раз.");
+    }finally{
+      gateBtn.disabled = false;
+      gateBtn.textContent = "Увійти";
+    }
   }
 
   document.getElementById('gateForm').addEventListener('submit', (e) => {
@@ -221,10 +314,116 @@
     enterAdmin();
   });
 
-  async function loadCurrentSettings(){
+  function renderProductCard(p, isNew){
+    const wrap = document.createElement('details');
+    wrap.className = 'product-card';
+    wrap.dataset.id = (p.id !== undefined && p.id !== null) ? String(p.id) : "";
+    wrap.dataset.delete = "0";
+
+    const summary = document.createElement('summary');
+    const label = isNew
+      ? "Новий товар"
+      : ("№" + p.id + " — " + (p.name || "без назви") + (p.active === "no" ? "  [прихований]" : ""));
+    summary.textContent = label;
+    wrap.appendChild(summary);
+
+    const body = document.createElement('div');
+    body.className = 'product-body';
+    body.innerHTML =
+      '<label class="first">Назва</label>' +
+      '<input type="text" class="p-name" value="' + escapeAttr(p.name) + '">' +
+
+      '<label>Ціна</label>' +
+      '<input type="text" class="p-price" value="' + escapeAttr(p.price) + '">' +
+
+      '<label>Опис</label>' +
+      '<textarea class="p-description">' + escapeHtml(p.description) + '</textarea>' +
+
+      '<label>Фото (посилання на картинки через кому)</label>' +
+      '<input type="text" class="p-image_url" value="' + escapeAttr(p.image_url) + '">' +
+
+      '<div class="field-row">' +
+        '<div>' +
+          '<label>Категорія</label>' +
+          '<input type="text" class="p-category" value="' + escapeAttr(p.category) + '">' +
+        '</div>' +
+        '<div>' +
+          '<label>Показувати на сайті?</label>' +
+          '<select class="p-active">' +
+            '<option value="yes">Так</option>' +
+            '<option value="no">Ні</option>' +
+          '</select>' +
+        '</div>' +
+      '</div>' +
+
+      '<label>Додаткові деталі</label>' +
+      '<textarea class="p-details">' + escapeHtml(p.details) + '</textarea>' +
+
+      '<label>Посилання на детальну сторінку (необов\'язково)</label>' +
+      '<input type="text" class="p-detail_url" value="' + escapeAttr(p.detail_url) + '">' +
+
+      '<br><br>' +
+      '<button type="button" class="btn btn-danger p-delete-btn">Видалити товар</button>';
+
+    wrap.appendChild(body);
+
+    const activeSel = body.querySelector('.p-active');
+    activeSel.value = (p.active === "no") ? "no" : "yes";
+
+    const delBtn = body.querySelector('.p-delete-btn');
+    delBtn.addEventListener('click', () => {
+      const marked = wrap.dataset.delete === "1";
+      if(!marked){
+        wrap.dataset.delete = "1";
+        wrap.classList.add('marked-delete');
+        delBtn.textContent = "Скасувати видалення";
+      }else{
+        wrap.dataset.delete = "0";
+        wrap.classList.remove('marked-delete');
+        delBtn.textContent = "Видалити товар";
+      }
+    });
+
+    return wrap;
+  }
+
+  addProductBtn.addEventListener('click', () => {
+    const card = renderProductCard({
+      name:"", price:"", description:"", image_url:"",
+      category:"", active:"yes", details:"", detail_url:""
+    }, true);
+    card.open = true;
+    productsList.prepend(card);
+    card.scrollIntoView({behavior:"smooth", block:"center"});
+  });
+
+  function collectProductsPayload(){
+    const cards = productsList.querySelectorAll('.product-card');
+    const products = [];
+    const deleteProductIds = [];
+    cards.forEach(card => {
+      const id = card.dataset.id;
+      if(card.dataset.delete === "1"){
+        if(id) deleteProductIds.push(id);
+        return;
+      }
+      const get = sel => card.querySelector(sel).value.trim();
+      const p = {};
+      PRODUCT_FIELDS.forEach(key => {
+        const el = card.querySelector('.p-' + key);
+        if(el) p[key] = el.value.trim();
+      });
+      if(id) p.id = id;
+      products.push(p);
+    });
+    return { products, deleteProductIds };
+  }
+
+  async function loadCurrentData(){
     try{
       const res = await fetch(API_URL + "?action=data", {cache:"no-cache"});
       const data = await res.json();
+
       const settings = data.settings || {};
       FIELDS.forEach(key => {
         const el = document.getElementById(key);
@@ -232,9 +431,23 @@
       });
       loading.style.display = "none";
       settingsForm.style.display = "block";
+
+      const products = data.products || [];
+      productsList.innerHTML = "";
+      products.forEach(p => productsList.appendChild(renderProductCard(p, false)));
+      productsLoadingHint.style.display = "none";
+      productsForm.style.display = "block";
     }catch(err){
-      loading.textContent = "Не вдалось завантажити поточні тексти. Онови сторінку й спробуй ще раз.";
+      loading.textContent = "Не вдалось завантажити дані. Онови сторінку й спробуй ще раз.";
+      productsLoadingHint.textContent = "Не вдалось завантажити товари. Онови сторінку й спробуй ще раз.";
     }
+  }
+
+  function backToGateWithWrongPassword(){
+    formCard.style.display = "none";
+    productsCard.style.display = "none";
+    gateCard.style.display = "block";
+    showGateError("Невірний пароль. Спробуй увійти ще раз.");
   }
 
   settingsForm.addEventListener('submit', async (e) => {
@@ -263,10 +476,7 @@
         saveMsg.classList.add('show','ok');
       }else{
         if(String(result.error || "").toLowerCase().includes("пароль")){
-          // невірний пароль — повертаємось на екран входу
-          formCard.style.display = "none";
-          gateCard.style.display = "block";
-          showGateError("Невірний пароль. Спробуй ще раз.");
+          backToGateWithWrongPassword();
         }else{
           saveMsg.textContent = "Помилка: " + (result.error || "невідома причина") + ".";
           saveMsg.classList.add('show','err');
@@ -277,7 +487,44 @@
       saveMsg.classList.add('show','err');
     }finally{
       saveBtn.disabled = false;
-      saveBtn.textContent = "Зберегти";
+      saveBtn.textContent = "Зберегти тексти";
+    }
+  });
+
+  productsForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    productsSaveMsg.className = "msg";
+    productsSaveBtn.disabled = true;
+    productsSaveBtn.textContent = "Зберігаю…";
+
+    const { products, deleteProductIds } = collectProductsPayload();
+
+    try{
+      const res = await fetch(API_URL, {
+        method: "POST",
+        headers: {"Content-Type":"text/plain;charset=utf-8"},
+        body: JSON.stringify({ action: "admin_update", password: adminPassword, products, deleteProductIds })
+      });
+      const result = await res.json();
+
+      if(result.ok){
+        productsSaveMsg.textContent = "Товари збережено! Оновлюю список…";
+        productsSaveMsg.classList.add('show','ok');
+        await loadCurrentData();
+      }else{
+        if(String(result.error || "").toLowerCase().includes("пароль")){
+          backToGateWithWrongPassword();
+        }else{
+          productsSaveMsg.textContent = "Помилка: " + (result.error || "невідома причина") + ".";
+          productsSaveMsg.classList.add('show','err');
+        }
+      }
+    }catch(err){
+      productsSaveMsg.textContent = "Щось пішло не так. Перевір інтернет-зʼєднання й спробуй ще раз.";
+      productsSaveMsg.classList.add('show','err');
+    }finally{
+      productsSaveBtn.disabled = false;
+      productsSaveBtn.textContent = "Зберегти товари";
     }
   });
 </script>
