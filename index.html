@@ -1522,6 +1522,22 @@
     if(e.key === 'ArrowRight') document.getElementById('lightboxNext').click();
   });
 
+  // Статичний знімок даних (products.json), який лежить поруч на хостингу.
+  // Завантажується миттєво, бо він на тому ж домені й не чекає на "холодний
+  // старт" Google Apps Script. Оновлюється командою "Оновити дані на сайті"
+  // (див. update-products-json.md) щоразу, коли міняється Google Таблиця.
+  async function loadStaticSnapshot(){
+    try{
+      const res = await fetch("products.json", {cache:"no-cache"});
+      if(!res.ok) return null;
+      const data = await res.json();
+      if(!data || !Array.isArray(data.products)) return null;
+      return { settings: data.settings || {}, products: data.products || [] };
+    }catch(err){
+      return null; // нема файлу або зіпсований — просто йдемо далі як раніше
+    }
+  }
+
   async function loadData(){
     if(!API_URL){
       STATE = DEMO_DATA;
@@ -1530,15 +1546,28 @@
       return;
     }
 
-    // Якщо є свіжий кеш — показуємо його миттєво (0 секунд очікування),
-    // а актуальні дані з таблиці підвантажуємо тихо у фоні нижче.
+    // Якщо є свіжий кеш — показуємо його миттєво (0 секунд очікування).
+    // Якщо кешу нема (перший візит або він застарів) — пробуємо статичний
+    // products.json: він на цьому ж хостингу, тож завантажується за
+    // мілісекунди, без затримки "холодного старту" Google Apps Script.
+    // У будь-якому разі нижче ще підвантажуються актуальні дані з таблиці
+    // у фоні — самі свіжі правки завжди наздоганяють показане.
     const cached = readCache();
+    let shownSomething = false;
     if(cached){
       STATE = cached;
       applySettings(STATE.settings);
       renderProducts(STATE.products);
+      shownSomething = true;
     }else{
       renderSkeletons();
+      const snapshot = await loadStaticSnapshot();
+      if(snapshot){
+        STATE = snapshot;
+        applySettings(STATE.settings);
+        renderProducts(STATE.products);
+        shownSomething = true;
+      }
     }
 
     try{
@@ -1554,12 +1583,12 @@
       writeCache(STATE);
     }catch(err){
       console.error("Не вдалось завантажити дані з API, показую демо-дані:", err);
-      if(!cached){
+      if(!shownSomething){
         STATE = DEMO_DATA;
         applySettings(STATE.settings);
         renderProducts(STATE.products);
       }
-      // якщо кеш вже показано — просто лишаємо його, картки не зникають
+      // якщо кеш або знімок вже показано — просто лишаємо його, картки не зникають
     }
   }
 
