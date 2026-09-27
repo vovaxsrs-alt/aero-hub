@@ -945,7 +945,7 @@
       <a href="#media">Медіа</a>
       <a href="#partners">Партнери</a>
       <a href="#contacts">Контакти</a>
-      <a href="#order">Замовити</a>
+      <a href="#order">Зворотній зв'язок</a>
     </nav>
     <button class="burger" id="burgerBtn" aria-label="Меню"><span></span></button>
   </div>
@@ -960,7 +960,7 @@
     <a href="#media">Медіа</a>
     <a href="#partners">Партнери</a>
     <a href="#contacts">Контакти</a>
-    <a href="#order">Замовити</a>
+    <a href="#order">Зворотній зв'язок</a>
   </div>
 </header>
 
@@ -1088,7 +1088,7 @@
 
 <section class="section" id="order">
   <div class="container">
-    <h2 class="section-title">Замовити</h2>
+    <h2 class="section-title">Зворотній зв'язок</h2>
     <p class="section-sub">Заповніть форму — і ми зв'яжемось з вами найближчим часом.</p>
     <form id="orderForm">
       <label>Ім'я
@@ -1346,7 +1346,7 @@
           <p class="lineup-price">${esc(priceText)}</p>
           <div class="lineup-actions">
             ${detailUrl ? `<a href="${esc(detailUrl)}" class="btn lineup-detail-link">Детальніше</a>` : (details.length > 0 ? `<button type="button" class="btn btn-outline lineup-details-toggle">Детальніше</button>` : "")}
-            <button type="button" class="btn order-btn" data-name="${esc(p.name)}">Замовити</button>
+            <button type="button" class="btn order-btn" data-name="${esc(p.name)}">Зворотній зв'язок</button>
           </div>
           ${(!detailUrl && details.length > 0) ? `<ul class="lineup-details-list">${details.map(d => `<li>${esc(d)}</li>`).join("")}</ul>` : ""}
         </div>`;
@@ -1378,7 +1378,7 @@
         });
       }
 
-      // --- кнопка "Замовити" на картці ---
+      // --- кнопка "Зворотній зв'язок" на картці ---
       card.querySelector('.order-btn').addEventListener('click', () => {
         document.getElementById('productSelect').value = p.name;
         document.getElementById('order').scrollIntoView({behavior:'smooth'});
