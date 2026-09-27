@@ -100,30 +100,30 @@
   .field-row > div{flex:1;}
   a.back-link{color:var(--accent-dark);font-size:14px;text-decoration:none;}
   a.back-link:hover{text-decoration:underline;}
-  #loading, #productsLoadingHint{color:var(--muted);font-size:14px;}
+  #loading, #productsLoadingHint, #newsLoadingHint, #mediaLoadingHint, #partnersLoadingHint{color:var(--muted);font-size:14px;}
   footer{text-align:center;color:var(--muted);font-size:12px;padding:20px;}
 
-  .product-card{
+  .item-card{
     border:1.5px solid var(--border);
     border-radius:10px;
     margin-bottom:12px;
     padding:0;
     overflow:hidden;
   }
-  .product-card > summary{
+  .item-card > summary{
     cursor:pointer;
     padding:12px 14px;
     font-weight:600;
     background:#fafbfa;
     list-style:none;
   }
-  .product-card > summary::-webkit-details-marker{display:none;}
-  .product-card > summary::before{content:"▸ ";color:var(--muted);}
-  .product-card[open] > summary::before{content:"▾ ";}
-  .product-body{padding:4px 14px 16px;}
-  .product-card.marked-delete{border-color:var(--danger);opacity:.6;}
-  .product-card.marked-delete > summary{background:var(--danger-light);text-decoration:line-through;}
-  #productsList{margin-top:12px;}
+  .item-card > summary::-webkit-details-marker{display:none;}
+  .item-card > summary::before{content:"▸ ";color:var(--muted);}
+  .item-card[open] > summary::before{content:"▾ ";}
+  .item-body{padding:4px 14px 16px;}
+  .item-card.marked-delete{border-color:var(--danger);opacity:.6;}
+  .item-card.marked-delete > summary{background:var(--danger-light);text-decoration:line-through;}
+  #productsList, #newsList, #mediaList, #partnersList{margin-top:12px;}
 </style>
 </head>
 <body>
@@ -218,6 +218,54 @@
     </form>
   </div>
 
+  <!-- Новини (з'являється після входу) -->
+  <div class="card" id="newsCard" style="display:none;">
+    <h1>Новини</h1>
+    <p class="hint" id="newsLoadingHint">Завантажую новини…</p>
+
+    <form id="newsForm" style="display:none;">
+      <div id="newsList"></div>
+
+      <button type="button" class="btn btn-secondary" id="addNewsBtn">+ Додати новину</button>
+
+      <br><br>
+      <button type="submit" class="btn btn-block" id="newsSaveBtn">Зберегти новини</button>
+      <div class="msg" id="newsSaveMsg"></div>
+    </form>
+  </div>
+
+  <!-- Медіа (з'являється після входу) -->
+  <div class="card" id="mediaCard" style="display:none;">
+    <h1>Медіа</h1>
+    <p class="hint" id="mediaLoadingHint">Завантажую фото…</p>
+
+    <form id="mediaForm" style="display:none;">
+      <div id="mediaList"></div>
+
+      <button type="button" class="btn btn-secondary" id="addMediaBtn">+ Додати фото</button>
+
+      <br><br>
+      <button type="submit" class="btn btn-block" id="mediaSaveBtn">Зберегти медіа</button>
+      <div class="msg" id="mediaSaveMsg"></div>
+    </form>
+  </div>
+
+  <!-- Партнери (з'являється після входу) -->
+  <div class="card" id="partnersCard" style="display:none;">
+    <h1>Партнери</h1>
+    <p class="hint" id="partnersLoadingHint">Завантажую партнерів…</p>
+
+    <form id="partnersForm" style="display:none;">
+      <div id="partnersList"></div>
+
+      <button type="button" class="btn btn-secondary" id="addPartnersBtn">+ Додати партнера</button>
+
+      <br><br>
+      <button type="submit" class="btn btn-block" id="partnersSaveBtn">Зберегти партнерів</button>
+      <div class="msg" id="partnersSaveMsg"></div>
+    </form>
+  </div>
+
   <p><a class="back-link" href="index.html">← Переглянути сайт</a></p>
 
 </main>
@@ -232,13 +280,132 @@
     "phone","email","address","instagram","telegram","footer_text"
   ];
 
-  const PRODUCT_FIELDS = ["name","price","description","image_url","category","active","details","detail_url"];
+  // Конфігурація для всіх редагованих списків (Товари/Новини/Медіа/Партнери).
+  // Один генеричний рушій (renderCollectionCard / collectCollectionPayload)
+  // обслуговує всі чотири — щоб додати новий список, достатньо додати
+  // ще один об'єкт сюди й відповідну картку в HTML.
+  const YES_NO_OPTIONS = [{value:"yes", label:"Так"}, {value:"no", label:"Ні"}];
+
+  const COLLECTIONS = [
+    {
+      key: "products",
+      cardId: "productsCard",
+      listId: "productsList",
+      formId: "productsForm",
+      addBtnId: "addProductBtn",
+      saveBtnId: "productsSaveBtn",
+      saveMsgId: "productsSaveMsg",
+      loadingHintId: "productsLoadingHint",
+      payloadKey: "products",
+      deleteKey: "deleteProductIds",
+      newLabel: "Новий товар",
+      deleteBtnLabel: "Видалити товар",
+      savingLabel: "Зберігаю…",
+      saveBtnLabel: "Зберегти товари",
+      savedLabel: "Товари збережено! Оновлюю список…",
+      emptyItem: () => ({name:"", price:"", description:"", image_url:"", category:"", active:"yes", details:"", detail_url:""}),
+      summary: p => "№" + p.id + " — " + (p.name || "без назви") + (p.active === "no" ? "  [прихований]" : ""),
+      fields: [
+        {key:"name", label:"Назва", type:"text"},
+        {key:"price", label:"Ціна", type:"text"},
+        {key:"description", label:"Опис", type:"textarea"},
+        {key:"image_url", label:"Фото (посилання на картинки через кому)", type:"text"},
+        {key:"category", label:"Категорія", type:"text"},
+        {key:"active", label:"Показувати на сайті?", type:"select", options:YES_NO_OPTIONS},
+        {key:"details", label:"Додаткові деталі", type:"textarea"},
+        {key:"detail_url", label:"Посилання на детальну сторінку (необов'язково)", type:"text"}
+      ],
+      rows: [["name"],["price"],["description"],["image_url"],["category","active"],["details"],["detail_url"]]
+    },
+    {
+      key: "news",
+      cardId: "newsCard",
+      listId: "newsList",
+      formId: "newsForm",
+      addBtnId: "addNewsBtn",
+      saveBtnId: "newsSaveBtn",
+      saveMsgId: "newsSaveMsg",
+      loadingHintId: "newsLoadingHint",
+      payloadKey: "news",
+      deleteKey: "deleteNewsIds",
+      newLabel: "Нова новина",
+      deleteBtnLabel: "Видалити новину",
+      savingLabel: "Зберігаю…",
+      saveBtnLabel: "Зберегти новини",
+      savedLabel: "Новини збережено! Оновлюю список…",
+      emptyItem: () => ({date:"", title:"", excerpt:"", image_url:"", detail_url:"", active:"yes"}),
+      summary: n => "№" + n.id + " — " + (n.title || "без заголовка") + (n.active === "no" ? "  [прихована]" : ""),
+      fields: [
+        {key:"title", label:"Заголовок", type:"text"},
+        {key:"date", label:"Дата (напр. 29 травня 2024)", type:"text"},
+        {key:"active", label:"Показувати на сайті?", type:"select", options:YES_NO_OPTIONS},
+        {key:"excerpt", label:"Короткий опис (на головній)", type:"textarea"},
+        {key:"image_url", label:"Фото (посилання на картинку)", type:"text"},
+        {key:"detail_url", label:"Посилання на повну статтю (необов'язково, напр. news.html#news-5)", type:"text"}
+      ],
+      rows: [["title"],["date","active"],["excerpt"],["image_url"],["detail_url"]]
+    },
+    {
+      key: "media",
+      cardId: "mediaCard",
+      listId: "mediaList",
+      formId: "mediaForm",
+      addBtnId: "addMediaBtn",
+      saveBtnId: "mediaSaveBtn",
+      saveMsgId: "mediaSaveMsg",
+      loadingHintId: "mediaLoadingHint",
+      payloadKey: "media",
+      deleteKey: "deleteMediaIds",
+      newLabel: "Нове фото",
+      deleteBtnLabel: "Видалити фото",
+      savingLabel: "Зберігаю…",
+      saveBtnLabel: "Зберегти медіа",
+      savedLabel: "Медіа збережено! Оновлюю список…",
+      emptyItem: () => ({image_url:"", caption:"", category:"combat", active:"yes"}),
+      summary: m => "№" + m.id + " — " + (m.caption || "без підпису") + (m.active === "no" ? "  [приховано]" : ""),
+      fields: [
+        {key:"image_url", label:"Фото (посилання на картинку)", type:"text"},
+        {key:"caption", label:"Підпис", type:"text"},
+        {key:"category", label:"Категорія", type:"select", options:[
+          {value:"combat", label:"Бойове застосування"},
+          {value:"production", label:"Виробництво"},
+          {value:"exhibition", label:"Виставки"}
+        ]},
+        {key:"active", label:"Показувати на сайті?", type:"select", options:YES_NO_OPTIONS}
+      ],
+      rows: [["image_url"],["caption"],["category","active"]]
+    },
+    {
+      key: "partners",
+      cardId: "partnersCard",
+      listId: "partnersList",
+      formId: "partnersForm",
+      addBtnId: "addPartnersBtn",
+      saveBtnId: "partnersSaveBtn",
+      saveMsgId: "partnersSaveMsg",
+      loadingHintId: "partnersLoadingHint",
+      payloadKey: "partners",
+      deleteKey: "deletePartnersIds",
+      newLabel: "Новий партнер",
+      deleteBtnLabel: "Видалити партнера",
+      savingLabel: "Зберігаю…",
+      saveBtnLabel: "Зберегти партнерів",
+      savedLabel: "Партнерів збережено! Оновлюю список…",
+      emptyItem: () => ({image_url:"", name:"", active:"yes"}),
+      summary: pt => "№" + pt.id + " — " + (pt.name || "без назви") + (pt.active === "no" ? "  [прихований]" : ""),
+      fields: [
+        {key:"image_url", label:"Логотип (посилання на картинку)", type:"text"},
+        {key:"name", label:"Назва партнера", type:"text"},
+        {key:"active", label:"Показувати на сайті?", type:"select", options:YES_NO_OPTIONS}
+      ],
+      rows: [["image_url"],["name"],["active"]]
+    }
+  ];
 
   let adminPassword = "";
 
   const gateCard = document.getElementById('gateCard');
   const formCard = document.getElementById('formCard');
-  const productsCard = document.getElementById('productsCard');
   const gateBtn = document.getElementById('gateBtn');
   const passwordInput = document.getElementById('passwordInput');
   const gateMsg = document.getElementById('gateMsg');
@@ -247,12 +414,15 @@
   const saveBtn = document.getElementById('saveBtn');
   const saveMsg = document.getElementById('saveMsg');
 
-  const productsLoadingHint = document.getElementById('productsLoadingHint');
-  const productsForm = document.getElementById('productsForm');
-  const productsList = document.getElementById('productsList');
-  const addProductBtn = document.getElementById('addProductBtn');
-  const productsSaveBtn = document.getElementById('productsSaveBtn');
-  const productsSaveMsg = document.getElementById('productsSaveMsg');
+  // Прив'язуємо DOM-елементи для кожного списку (Товари/Новини/Медіа/Партнери).
+  COLLECTIONS.forEach(config => {
+    config.listEl = document.getElementById(config.listId);
+    config.formEl = document.getElementById(config.formId);
+    config.addBtnEl = document.getElementById(config.addBtnId);
+    config.saveBtnEl = document.getElementById(config.saveBtnId);
+    config.saveMsgEl = document.getElementById(config.saveMsgId);
+    config.loadingHintEl = document.getElementById(config.loadingHintId);
+  });
 
   function showGateError(text){
     gateMsg.textContent = text;
@@ -296,7 +466,7 @@
         adminPassword = pass;
         gateCard.style.display = "none";
         formCard.style.display = "block";
-        productsCard.style.display = "block";
+        COLLECTIONS.forEach(c => document.getElementById(c.cardId).style.display = "block");
         await loadCurrentData();
       }else{
         showGateError("Невірний пароль. Спробуй ще раз.");
@@ -314,63 +484,66 @@
     enterAdmin();
   });
 
-  function renderProductCard(p, isNew){
+  function fieldInputHtml(field, value){
+    const cls = 'f-' + field.key;
+    if(field.type === 'textarea'){
+      return '<textarea class="' + cls + '">' + escapeHtml(value) + '</textarea>';
+    }
+    if(field.type === 'select'){
+      const opts = field.options.map(o =>
+        '<option value="' + escapeAttr(o.value) + '">' + escapeHtml(o.label) + '</option>'
+      ).join('');
+      return '<select class="' + cls + '">' + opts + '</select>';
+    }
+    return '<input type="text" class="' + cls + '" value="' + escapeAttr(value) + '">';
+  }
+
+  // Універсальний рендер картки одного елемента списку (товар/новина/фото/партнер).
+  function renderCollectionCard(config, item, isNew){
     const wrap = document.createElement('details');
-    wrap.className = 'product-card';
-    wrap.dataset.id = (p.id !== undefined && p.id !== null) ? String(p.id) : "";
+    wrap.className = 'item-card';
+    wrap.dataset.id = (item.id !== undefined && item.id !== null) ? String(item.id) : "";
     wrap.dataset.delete = "0";
 
     const summary = document.createElement('summary');
-    const label = isNew
-      ? "Новий товар"
-      : ("№" + p.id + " — " + (p.name || "без назви") + (p.active === "no" ? "  [прихований]" : ""));
-    summary.textContent = label;
+    summary.textContent = isNew ? config.newLabel : config.summary(item);
     wrap.appendChild(summary);
 
     const body = document.createElement('div');
-    body.className = 'product-body';
-    body.innerHTML =
-      '<label class="first">Назва</label>' +
-      '<input type="text" class="p-name" value="' + escapeAttr(p.name) + '">' +
+    body.className = 'item-body';
 
-      '<label>Ціна</label>' +
-      '<input type="text" class="p-price" value="' + escapeAttr(p.price) + '">' +
-
-      '<label>Опис</label>' +
-      '<textarea class="p-description">' + escapeHtml(p.description) + '</textarea>' +
-
-      '<label>Фото (посилання на картинки через кому)</label>' +
-      '<input type="text" class="p-image_url" value="' + escapeAttr(p.image_url) + '">' +
-
-      '<div class="field-row">' +
-        '<div>' +
-          '<label>Категорія</label>' +
-          '<input type="text" class="p-category" value="' + escapeAttr(p.category) + '">' +
-        '</div>' +
-        '<div>' +
-          '<label>Показувати на сайті?</label>' +
-          '<select class="p-active">' +
-            '<option value="yes">Так</option>' +
-            '<option value="no">Ні</option>' +
-          '</select>' +
-        '</div>' +
-      '</div>' +
-
-      '<label>Додаткові деталі</label>' +
-      '<textarea class="p-details">' + escapeHtml(p.details) + '</textarea>' +
-
-      '<label>Посилання на детальну сторінку (необов\'язково)</label>' +
-      '<input type="text" class="p-detail_url" value="' + escapeAttr(p.detail_url) + '">' +
-
-      '<br><br>' +
-      '<button type="button" class="btn btn-danger p-delete-btn">Видалити товар</button>';
-
+    let html = "";
+    config.rows.forEach((row, idx) => {
+      const firstClass = idx === 0 ? ' class="first"' : '';
+      if(row.length === 2){
+        const f1 = config.fields.find(f => f.key === row[0]);
+        const f2 = config.fields.find(f => f.key === row[1]);
+        html += '<div class="field-row"><div>' +
+          '<label' + firstClass + '>' + f1.label + '</label>' + fieldInputHtml(f1, item[f1.key]) +
+          '</div><div>' +
+          '<label' + firstClass + '>' + f2.label + '</label>' + fieldInputHtml(f2, item[f2.key]) +
+          '</div></div>';
+      }else{
+        const f = config.fields.find(ff => ff.key === row[0]);
+        html += '<label' + firstClass + '>' + f.label + '</label>' + fieldInputHtml(f, item[f.key]);
+      }
+    });
+    html += '<br><br><button type="button" class="btn btn-danger item-delete-btn">' + config.deleteBtnLabel + '</button>';
+    body.innerHTML = html;
     wrap.appendChild(body);
 
-    const activeSel = body.querySelector('.p-active');
-    activeSel.value = (p.active === "no") ? "no" : "yes";
+    // <select> value не встановлюється через innerHTML — виставляємо явно.
+    config.fields.forEach(f => {
+      if(f.type === 'select'){
+        const el = body.querySelector('.f-' + f.key);
+        if(el){
+          const v = item[f.key];
+          el.value = f.options.some(o => o.value === v) ? v : f.options[0].value;
+        }
+      }
+    });
 
-    const delBtn = body.querySelector('.p-delete-btn');
+    const delBtn = body.querySelector('.item-delete-btn');
     delBtn.addEventListener('click', () => {
       const marked = wrap.dataset.delete === "1";
       if(!marked){
@@ -380,44 +553,42 @@
       }else{
         wrap.dataset.delete = "0";
         wrap.classList.remove('marked-delete');
-        delBtn.textContent = "Видалити товар";
+        delBtn.textContent = config.deleteBtnLabel;
       }
     });
 
     return wrap;
   }
 
-  addProductBtn.addEventListener('click', () => {
-    const card = renderProductCard({
-      name:"", price:"", description:"", image_url:"",
-      category:"", active:"yes", details:"", detail_url:""
-    }, true);
-    card.open = true;
-    productsList.prepend(card);
-    card.scrollIntoView({behavior:"smooth", block:"center"});
-  });
-
-  function collectProductsPayload(){
-    const cards = productsList.querySelectorAll('.product-card');
-    const products = [];
-    const deleteProductIds = [];
+  function collectCollectionPayload(config){
+    const cards = config.listEl.querySelectorAll('.item-card');
+    const items = [];
+    const deleteIds = [];
     cards.forEach(card => {
       const id = card.dataset.id;
       if(card.dataset.delete === "1"){
-        if(id) deleteProductIds.push(id);
+        if(id) deleteIds.push(id);
         return;
       }
-      const get = sel => card.querySelector(sel).value.trim();
-      const p = {};
-      PRODUCT_FIELDS.forEach(key => {
-        const el = card.querySelector('.p-' + key);
-        if(el) p[key] = el.value.trim();
+      const obj = {};
+      config.fields.forEach(f => {
+        const el = card.querySelector('.f-' + f.key);
+        if(el) obj[f.key] = el.value.trim();
       });
-      if(id) p.id = id;
-      products.push(p);
+      if(id) obj.id = id;
+      items.push(obj);
     });
-    return { products, deleteProductIds };
+    return { items, deleteIds };
   }
+
+  COLLECTIONS.forEach(config => {
+    config.addBtnEl.addEventListener('click', () => {
+      const card = renderCollectionCard(config, config.emptyItem(), true);
+      card.open = true;
+      config.listEl.prepend(card);
+      card.scrollIntoView({behavior:"smooth", block:"center"});
+    });
+  });
 
   async function loadCurrentData(){
     try{
@@ -432,20 +603,24 @@
       loading.style.display = "none";
       settingsForm.style.display = "block";
 
-      const products = data.products || [];
-      productsList.innerHTML = "";
-      products.forEach(p => productsList.appendChild(renderProductCard(p, false)));
-      productsLoadingHint.style.display = "none";
-      productsForm.style.display = "block";
+      COLLECTIONS.forEach(config => {
+        const items = data[config.key] || [];
+        config.listEl.innerHTML = "";
+        items.forEach(item => config.listEl.appendChild(renderCollectionCard(config, item, false)));
+        config.loadingHintEl.style.display = "none";
+        config.formEl.style.display = "block";
+      });
     }catch(err){
       loading.textContent = "Не вдалось завантажити дані. Онови сторінку й спробуй ще раз.";
-      productsLoadingHint.textContent = "Не вдалось завантажити товари. Онови сторінку й спробуй ще раз.";
+      COLLECTIONS.forEach(config => {
+        config.loadingHintEl.textContent = "Не вдалось завантажити дані. Онови сторінку й спробуй ще раз.";
+      });
     }
   }
 
   function backToGateWithWrongPassword(){
     formCard.style.display = "none";
-    productsCard.style.display = "none";
+    COLLECTIONS.forEach(c => document.getElementById(c.cardId).style.display = "none");
     gateCard.style.display = "block";
     showGateError("Невірний пароль. Спробуй увійти ще раз.");
   }
@@ -491,41 +666,46 @@
     }
   });
 
-  productsForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    productsSaveMsg.className = "msg";
-    productsSaveBtn.disabled = true;
-    productsSaveBtn.textContent = "Зберігаю…";
+  COLLECTIONS.forEach(config => {
+    config.formEl.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      config.saveMsgEl.className = "msg";
+      config.saveBtnEl.disabled = true;
+      config.saveBtnEl.textContent = config.savingLabel;
 
-    const { products, deleteProductIds } = collectProductsPayload();
+      const { items, deleteIds } = collectCollectionPayload(config);
+      const payload = { action: "admin_update", password: adminPassword };
+      payload[config.payloadKey] = items;
+      payload[config.deleteKey] = deleteIds;
 
-    try{
-      const res = await fetch(API_URL, {
-        method: "POST",
-        headers: {"Content-Type":"text/plain;charset=utf-8"},
-        body: JSON.stringify({ action: "admin_update", password: adminPassword, products, deleteProductIds })
-      });
-      const result = await res.json();
+      try{
+        const res = await fetch(API_URL, {
+          method: "POST",
+          headers: {"Content-Type":"text/plain;charset=utf-8"},
+          body: JSON.stringify(payload)
+        });
+        const result = await res.json();
 
-      if(result.ok){
-        productsSaveMsg.textContent = "Товари збережено! Оновлюю список…";
-        productsSaveMsg.classList.add('show','ok');
-        await loadCurrentData();
-      }else{
-        if(String(result.error || "").toLowerCase().includes("пароль")){
-          backToGateWithWrongPassword();
+        if(result.ok){
+          config.saveMsgEl.textContent = config.savedLabel;
+          config.saveMsgEl.classList.add('show','ok');
+          await loadCurrentData();
         }else{
-          productsSaveMsg.textContent = "Помилка: " + (result.error || "невідома причина") + ".";
-          productsSaveMsg.classList.add('show','err');
+          if(String(result.error || "").toLowerCase().includes("пароль")){
+            backToGateWithWrongPassword();
+          }else{
+            config.saveMsgEl.textContent = "Помилка: " + (result.error || "невідома причина") + ".";
+            config.saveMsgEl.classList.add('show','err');
+          }
         }
+      }catch(err){
+        config.saveMsgEl.textContent = "Щось пішло не так. Перевір інтернет-зʼєднання й спробуй ще раз.";
+        config.saveMsgEl.classList.add('show','err');
+      }finally{
+        config.saveBtnEl.disabled = false;
+        config.saveBtnEl.textContent = config.saveBtnLabel;
       }
-    }catch(err){
-      productsSaveMsg.textContent = "Щось пішло не так. Перевір інтернет-зʼєднання й спробуй ще раз.";
-      productsSaveMsg.classList.add('show','err');
-    }finally{
-      productsSaveBtn.disabled = false;
-      productsSaveBtn.textContent = "Зберегти товари";
-    }
+    });
   });
 </script>
 
