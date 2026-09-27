@@ -235,6 +235,12 @@
     max-width:520px;
     margin:0 auto 36px;
   }
+  /* Ширший варіант — для довшого вступного тексту (напр. під "Продукція"),
+     щоб він не виглядав стиснутим у вузьку колонку, як звичайні короткі
+     підзаголовки секцій. Ширина узгоджена з підзаголовком у hero. */
+  .section-sub-wide{
+    max-width:960px;
+  }
   #products{
     padding-top:88px;
   }
@@ -972,7 +978,7 @@
   <div class="container">
     <h2 class="section-title">Про нас</h2>
     <div class="about-wrap">
-      <div class="about-photo">
+      <div class="about-photo" id="aboutPhotoWrap" style="display:none;">
         <img id="aboutPhoto" src="" alt="Фото" style="display:none;">
       </div>
       <div class="about-text" id="aboutText">
@@ -985,7 +991,7 @@
 <section class="section" id="products">
   <div class="container">
     <h2 class="section-title">Продукція</h2>
-    <p class="section-sub">АЕРО ХАБ розробляє та виробляє безпілотну техніку й спеціалізоване обладнання. У каталозі представлені НРК, БПЛА та БПАК, засоби зв'язку і системи радіоелектронної боротьби. Кожен напрям доповнюється технічними рішеннями для керування, передачі даних та роботи безпілотних систем. Оберіть потрібне і залиште заявку — ми зв'яжемось з вами.</p>
+    <p class="section-sub section-sub-wide">АЕРО ХАБ розробляє та виробляє безпілотну техніку й спеціалізоване обладнання. У каталозі представлені НРК, БПЛА та БПАК, засоби зв'язку і системи радіоелектронної боротьби. Кожен напрям доповнюється технічними рішеннями для керування, передачі даних та роботи безпілотних систем. Оберіть потрібне і залиште заявку — ми зв'яжемось з вами.</p>
 
     <nav class="lineup-cat-nav">
       <a href="#cat-ground">Наземні роботизовані комплекси</a>
@@ -1199,10 +1205,18 @@
     document.getElementById('heroTitle').textContent = s.hero_title || s.site_name || "Дрони, які працюють на результат";
     document.getElementById('heroSubtitle').textContent = s.hero_subtitle || "";
     document.getElementById('aboutText').textContent = s.about_text || "";
+    // Фото в блоці «Про нас» — необов'язкове. Якщо його нема, ховаємо весь
+    // блок .about-photo (а не лише саму картинку): інакше він, навіть
+    // порожній, лишає зарезервоване місце зліва (flex-basis), і текст
+    // виглядає стиснутим і зсунутим вправо.
+    const aboutPhotoWrap = document.getElementById('aboutPhotoWrap');
     if(s.about_photo_url){
       const img = document.getElementById('aboutPhoto');
       img.src = s.about_photo_url;
       img.style.display = "block";
+      aboutPhotoWrap.style.display = "";
+    }else{
+      aboutPhotoWrap.style.display = "none";
     }
     document.getElementById('footerText').textContent = s.footer_text || "© " + new Date().getFullYear() + " " + (s.site_name || "");
 
@@ -1358,7 +1372,15 @@
         if(prevBtn) prevBtn.addEventListener('click', (e) => { e.stopPropagation(); setIndex(idx - 1); });
         if(nextBtn) nextBtn.addEventListener('click', (e) => { e.stopPropagation(); setIndex(idx + 1); });
         dots.forEach(d => d.addEventListener('click', (e) => { e.stopPropagation(); setIndex(Number(d.dataset.i)); }));
-        imgEl.addEventListener('click', () => openLightbox(images, idx));
+        // Клік по фото картки товару веде на сторінку опису — так само, як
+        // клік по назві/будь-якій іншій частині картки. Повноекранний
+        // перегляд фото доступний лише всередині сторінки опису товару.
+        // Якщо в товару нема окремої сторінки опису — лишаємо старий лайтбокс,
+        // бо йому більше нікуди вести.
+        imgEl.addEventListener('click', () => {
+          if(detailUrl){ window.location.href = detailUrl; }
+          else{ openLightbox(images, idx); }
+        });
       }
 
       // --- кнопка "Замовити" на картці ---
