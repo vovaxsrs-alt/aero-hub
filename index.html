@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>АЕРО ХАБ</title>
-<meta name="description" content="Сайт-візитка з каталогом товарів">
+<title>Безпілотні та роботизовані системи – АЕРО ХАБ</title>
+<meta name="description" content="АЕРО ХАБ – український розробник і виробник безпілотних та роботизованих систем: БПЛА, БПАК, НРК, засобів зв'язку та РЕБ.">
 <link rel="icon" type="image/x-icon" href="favicon.ico">
 <link rel="preconnect" href="https://script.google.com">
 <link rel="dns-prefetch" href="https://script.google.com">
@@ -191,10 +191,12 @@
     color:var(--accent-dark);
   }
   .hero p{
-    font-size:1.1rem;
-    color:var(--text-muted);
-    max-width:960px;
+    font-size:clamp(1.1rem,2.3vw,1.3rem);
+    font-weight:600;
+    color:var(--accent-dark);
+    max-width:820px;
     margin:0 auto 28px;
+    line-height:1.45;
   }
   .btn{
     display:inline-block;
@@ -234,6 +236,12 @@
     color:var(--text-muted);
     max-width:520px;
     margin:0 auto 36px;
+  }
+  /* Ширший варіант — для довшого вступного тексту (напр. під "Продукція"),
+     щоб він не виглядав стиснутим у вузьку колонку, як звичайні короткі
+     підзаголовки секцій. Ширина узгоджена з підзаголовком у hero. */
+  .section-sub-wide{
+    max-width:960px;
   }
   #products{
     padding-top:88px;
@@ -857,6 +865,58 @@
     font-size:.9rem;
   }
 
+  /* ---------- FAQ ---------- */
+  .faq-list{
+    max-width:760px;
+    margin:0 auto;
+  }
+  .faq-item{
+    border-bottom:1px solid var(--border);
+  }
+  .faq-item:first-child{
+    border-top:1px solid var(--border);
+  }
+  .faq-question{
+    width:100%;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    background:none;
+    border:none;
+    text-align:left;
+    font-family:inherit;
+    font-size:1rem;
+    font-weight:600;
+    color:var(--text);
+    padding:18px 4px;
+    cursor:pointer;
+  }
+  .faq-icon{
+    flex:none;
+    width:24px;
+    height:24px;
+    border-radius:50%;
+    background:var(--accent-light);
+    color:var(--accent-dark);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:1.1rem;
+    line-height:1;
+    transition:transform .2s ease;
+  }
+  .faq-item.open .faq-icon{transform:rotate(45deg);}
+  .faq-answer{
+    max-height:0;
+    overflow:hidden;
+    transition:max-height .25s ease;
+  }
+  .faq-answer p{
+    margin:0 4px 18px;
+    color:var(--text-muted);
+  }
+
   /* ---------- ORDER FORM ---------- */
   form{
     max-width:520px;
@@ -939,7 +999,8 @@
       <a href="#media">Медіа</a>
       <a href="#partners">Партнери</a>
       <a href="#contacts">Контакти</a>
-      <a href="#order">Замовити</a>
+      <a href="#faq">Часті питання</a>
+      <a href="#order">Зворотній зв'язок</a>
     </nav>
     <button class="burger" id="burgerBtn" aria-label="Меню"><span></span></button>
   </div>
@@ -954,7 +1015,8 @@
     <a href="#media">Медіа</a>
     <a href="#partners">Партнери</a>
     <a href="#contacts">Контакти</a>
-    <a href="#order">Замовити</a>
+    <a href="#faq">Часті питання</a>
+    <a href="#order">Зворотній зв'язок</a>
   </div>
 </header>
 
@@ -963,7 +1025,7 @@
 <section class="hero">
   <div class="container">
     <h1 id="heroTitle">Дрони, які працюють на результат</h1>
-    <p id="heroSubtitle">Розробляємо, виробляємо та впроваджуємо безпілотні літальні апарати для агросектору, моніторингу та логістики.</p>
+    <p id="heroSubtitle">Розробляємо та виробляємо безпілотні літальні апарати, наземні роботизовані комплекси, засоби зв'язку та системи РЕБ. Створюємо технологічні рішення для розвідки, моніторингу, логістики, розмінування та інших спеціалізованих завдань.</p>
     <a href="#products" class="btn">Переглянути товари</a>
   </div>
 </section>
@@ -972,11 +1034,13 @@
   <div class="container">
     <h2 class="section-title">Про нас</h2>
     <div class="about-wrap">
-      <div class="about-photo">
+      <div class="about-photo" id="aboutPhotoWrap" style="display:none;">
         <img id="aboutPhoto" src="" alt="Фото" style="display:none;">
       </div>
       <div class="about-text" id="aboutText">
-        «АЕРО ХАБ» — українська команда інженерів і розробників, яка спеціалізується на створенні дронів під конкретні задачі клієнта: від аграрного моніторингу до картографування та логістики. Ми поєднуємо власне виробництво, тестування та технічну підтримку, щоб кожен дрон надійно працював у реальних умовах.
+        АЕРО ХАБ – український розробник і виробник безпілотних та роботизованих систем. Команда інженерів створює техніку під конкретні завдання, поєднуючи власну розробку, виробництво, тестування та технічний супровід. У портфоліо – БПЛА та БПАК, наземні роботизовані комплекси, засоби зв'язку й РЕБ.
+
+        Працюємо над рішеннями для моніторингу, картографування, логістики, розмінування та інших сфер, де потрібні дистанційно керовані й технологічні системи.
       </div>
     </div>
   </div>
@@ -985,7 +1049,7 @@
 <section class="section" id="products">
   <div class="container">
     <h2 class="section-title">Продукція</h2>
-    <p class="section-sub">Повна лінійка розробок АЕРО ХАБ: наземні роботизовані комплекси, безпілотні літаючі апарати, засоби зв'язку та РЕБ. Оберіть потрібне і залиште заявку — ми зв'яжемось з вами.</p>
+    <p class="section-sub section-sub-wide">АЕРО ХАБ розробляє та виробляє безпілотну техніку й спеціалізоване обладнання. У каталозі представлені НРК, БПЛА та БПАК, засоби зв'язку і системи радіоелектронної боротьби. Кожен напрям доповнюється технічними рішеннями для керування, передачі даних та роботи безпілотних систем. Оберіть потрібне і залиште заявку — ми зв'яжемось з вами.</p>
 
     <nav class="lineup-cat-nav">
       <a href="#cat-ground">Наземні роботизовані комплекси</a>
@@ -999,7 +1063,7 @@
         <span class="lineup-cat-icon">🤖</span>
         <h3 class="lineup-cat-title">Наземні роботизовані комплекси</h3>
       </div>
-      <p class="lineup-cat-desc">НРК закривають ключові потреби: гуманітарне й військове розмінування, логістика, евакуація, мінування. Навісне обладнання під цивільні та військові завдання, висока прохідність і ремонтопридатність.</p>
+      <p class="lineup-cat-desc">Наземні роботизовані комплекси (НРК) – дистанційно керовані платформи для виконання завдань без безпосередньої участі людини. Розробки АЕРО ХАБ можуть використовуватися для розмінування, логістики, евакуації, мінування та транспортування спеціального обладнання. Конструкція платформ передбачає можливість встановлення навісного обладнання відповідно до завдань.</p>
       <div class="lineup-grid" id="grid-ground">
         <!-- товари цієї категорії підвантажуються з Google Таблиці автоматично -->
       </div>
@@ -1010,7 +1074,7 @@
         <span class="lineup-cat-icon">✈</span>
         <h3 class="lineup-cat-title">Безпілотні літаючі апарати</h3>
       </div>
-      <p class="lineup-cat-desc">БПАК серії ПР-1 оснащені різним обладнанням для виконання як військових, так і навчальних операцій — розвідка, ураження цілі, доставка вантажу. Висока маневреність, точність у виконанні завдань і простота в управлінні та обслуговуванні.</p>
+      <p class="lineup-cat-desc">БПЛА та безпілотні авіаційні комплекси (БПАК) АЕРО ХАБ призначені для виконання різних спеціалізованих завдань. Платформи можна купити з комплектацією обладнанням для розвідки, моніторингу, роботи з корисним навантаженням, доставки вантажів та інших операцій. Конструкція й комплектація підбираються індивідуально відповідно до умов використання.</p>
       <div class="lineup-grid" id="grid-air">
         <!-- товари цієї категорії підвантажуються з Google Таблиці автоматично -->
       </div>
@@ -1021,7 +1085,7 @@
         <span class="lineup-cat-icon">📡</span>
         <h3 class="lineup-cat-title">Засоби зв'язку</h3>
       </div>
-      <p class="lineup-cat-desc">Комплекти зв'язку для будь-яких повітряних та наземних роботів і БПЛА — відеоканал (аналог/цифра) та канал керування, стійкий до РЕБ.</p>
+      <p class="lineup-cat-desc">Засоби зв'язку для БПЛА та НРК забезпечують передачу команд, відео та інших даних між оператором і безпілотною платформою. У рішеннях АЕРО ХАБ ми передбачили канали керування та відеоканали в аналоговому й цифровому форматах. Обладнання може використовуватися для повітряних і наземних роботизованих систем.</p>
       <div class="lineup-grid" id="grid-comms">
         <!-- товари цієї категорії підвантажуються з Google Таблиці автоматично -->
       </div>
@@ -1032,7 +1096,7 @@
         <span class="lineup-cat-icon">📶</span>
         <h3 class="lineup-cat-title">РЕБ</h3>
       </div>
-      <p class="lineup-cat-desc">Засоби радіоелектронної боротьби — стаціонарні та мобільні комплекси для захисту від БПЛА і придушення зв'язку супротивника.</p>
+      <p class="lineup-cat-desc">Системи радіоелектронної боротьби (РЕБ) призначені для роботи з радіосигналами та протидії безпілотним системам. Ми розробляємо стаціонарні й мобільні рішення, які можуть застосовуватися для захисту від БПЛА та виконання спеціалізованих завдань у сфері радіоелектронної боротьби.</p>
       <div class="lineup-grid" id="grid-reb">
         <!-- товари цієї категорії підвантажуються з Google Таблиці автоматично -->
       </div>
@@ -1046,44 +1110,7 @@
   <div class="container">
     <h2 class="section-title">Новини</h2>
     <p class="section-sub">Останні новини та публікації про нашу команду й розробки. <a href="news.html" class="news-all-link">Усі новини →</a></p>
-    <div class="news-grid" id="newsGrid">
-      <article class="news-card">
-        <a href="news.html#news-1" class="news-img-wrap"><img src="images/news-vystavka.jpg" alt="АЕРО ХАБ на виставці «Технології захисту/ПожТех»" loading="lazy"></a>
-        <div class="news-card-body">
-        <div class="news-date">29 травня 2024</div>
-        <h3 class="news-title"><a href="news.html#news-1">AEROHUB на міжнародній спеціалізованій виставці «Технології захисту/ПожТех»</a></h3>
-        <p class="news-excerpt">Команда АЕРО ХАБ взяла участь у Міжнародній спеціалізованій виставці «Технології захисту/пожтех» та представила свої розробки керованих наземних платформ зі спеціальним оснащенням.</p>
-        <a class="news-link" href="news.html#news-1">Читати повністю →</a>
-        </div>
-      </article>
-      <article class="news-card">
-        <a href="news.html#news-2" class="news-img-wrap"><img src="images/kaban-1.jpg" alt="Дрон-сапер «Кабан»" loading="lazy"></a>
-        <div class="news-card-body">
-        <div class="news-date">21 березня 2024</div>
-        <h3 class="news-title"><a href="news.html#news-2">Український СТАРТАП: як працює дрон-сапер «КАБАН»</a></h3>
-        <p class="news-excerpt">Чотири потужних колеса, захищений корпус і можливість знімати розтяжки як на відкритій місцевості, так і в приміщеннях. У Харківській області саперні групи використовують наземний безпілотник «КАБАН».</p>
-        <a class="news-link" href="news.html#news-2">Читати повністю →</a>
-        </div>
-      </article>
-      <article class="news-card">
-        <a href="news.html#news-3" class="news-img-wrap"><img src="images/kaban-2.jpg" alt="Дрон «Кабан» на тестуванні" loading="lazy"></a>
-        <div class="news-card-body">
-        <div class="news-date">21 березня 2024</div>
-        <h3 class="news-title"><a href="news.html#news-3">З дроном «Кабаном»: винахідники з Києва показали новий спосіб розмінування</a></h3>
-        <p class="news-excerpt">В Україні активно шукають ідеї, які допоможуть полегшити та пришвидшити розмінування територій. Винахідники з Києва розробили дрон на дистанційному керуванні, який отримав назву «Кабан».</p>
-        <a class="news-link" href="news.html#news-3">Читати повністю →</a>
-        </div>
-      </article>
-      <article class="news-card">
-        <a href="news.html#news-4" class="news-img-wrap"><img src="images/news-kaban-boar.jpg" alt="Випробування наземного дрона «Кабан»" loading="lazy"></a>
-        <div class="news-card-body">
-        <div class="news-date">13 березня 2024</div>
-        <h3 class="news-title"><a href="news.html#news-4">Допомога на нулі: українські військові провели випробування наземного дрона «Кабан» (BOAR)</a></h3>
-        <p class="news-excerpt">Україна продовжує розвивати свої військові технології, щоб забезпечити безпеку та ефективність військових операцій. Нещодавно в країні пройшли успішні випробування роботизованих наземних платформ — розробок кластера Brave1.</p>
-        <a class="news-link" href="news.html#news-4">Читати повністю →</a>
-        </div>
-      </article>
-    </div>
+    <div class="news-grid" id="newsGrid"></div>
   </div>
 </section>
 
@@ -1097,36 +1124,7 @@
       <button type="button" data-cat="production">Виробництво</button>
       <button type="button" data-cat="exhibition">Виставка</button>
     </div>
-    <div class="media-grid" id="mediaGrid">
-      <div class="media-card" data-cat="combat">
-        <img src="images/media-kaban-kharkiv.jpg" alt="Дрон Кабан (Харківська обл.)" loading="lazy">
-        <div class="media-card-caption">Дрон Кабан (Харківська обл.)</div>
-      </div>
-      <div class="media-card" data-cat="production">
-        <img src="images/media-workshop.jpg" alt="У цеху з виробництва" loading="lazy">
-        <div class="media-card-caption">У цеху з виробництва</div>
-      </div>
-      <div class="media-card" data-cat="production">
-        <img src="images/media-kaban-mod-1.jpg" alt="Модифікація дрон Кабан" loading="lazy">
-        <div class="media-card-caption">Модифікація дрон «Кабан»</div>
-      </div>
-      <div class="media-card" data-cat="production">
-        <img src="images/media-kaban-mod-2.jpg" alt="Саперний дрон-демінер Кабан модифікація" loading="lazy">
-        <div class="media-card-caption">Саперний дрон-демінер «Кабан», модифікація</div>
-      </div>
-      <div class="media-card" data-cat="production">
-        <img src="images/media-kaban-kamikaze-mod.jpg" alt="Модифікація дрон Кабан Камікадзе" loading="lazy">
-        <div class="media-card-caption">Модифікація дрон «Кабан Камікадзе»</div>
-      </div>
-      <div class="media-card" data-cat="exhibition">
-        <img src="images/media-exhibition-mvc.jpg" alt="На виставці в МВЦ" loading="lazy">
-        <div class="media-card-caption">На виставці в МВЦ</div>
-      </div>
-      <div class="media-card" data-cat="exhibition">
-        <img src="images/media-exhibition-mvc-2.jpg" alt="Демінер та камікадзе (МВЦ-2024)" loading="lazy">
-        <div class="media-card-caption">Демінер та камікадзе (МВЦ-2024)</div>
-      </div>
-    </div>
+    <div class="media-grid" id="mediaGrid"></div>
   </div>
 </section>
 
@@ -1134,52 +1132,7 @@
   <div class="container">
     <h2 class="section-title">Партнери</h2>
     <p class="section-sub">Організації та навчальні заклади, з якими співпрацює АЕРО ХАБ.</p>
-    <div class="partners-grid">
-      <div class="partner-card">
-        <div class="partner-card-img"><img src="images/partner-roboty-ua.jpg" alt="ТОВ «Роботи.ЮА»" loading="lazy"></div>
-        <div class="partner-card-name">Товариство з обмеженою відповідальністю «Роботи.ЮА»</div>
-      </div>
-      <div class="partner-card">
-        <div class="partner-card-img"><img src="images/partner-sport-university.png" alt="Національний університет фізичного виховання і спорту України" loading="lazy"></div>
-        <div class="partner-card-name">Національний університет фізичного виховання і спорту України</div>
-      </div>
-      <div class="partner-card">
-        <div class="partner-card-img"><img src="images/partner-kai.png" alt="Державний університет «Київський авіаційний інститут»" loading="lazy"></div>
-        <div class="partner-card-name">Державний університет «Київський авіаційний інститут»</div>
-      </div>
-      <div class="partner-card">
-        <div class="partner-card-img"><img src="images/partner-bioresources-university.png" alt="Національний університет біоресурсів і природокористування України" loading="lazy"></div>
-        <div class="partner-card-name">Національний університет біоресурсів і природокористування України</div>
-      </div>
-      <div class="partner-card">
-        <div class="partner-card-img"><img src="images/partner-kruk.png" alt="Центр підготовки операторів БПЛА «КРУК»" loading="lazy"></div>
-        <div class="partner-card-name">Центр підготовки операторів БПЛА «КРУК»</div>
-      </div>
-      <div class="partner-card">
-        <div class="partner-card-img"><img src="images/partner-vpp-invest.png" alt="ТОВ «ВПП ІНВЕСТ»" loading="lazy"></div>
-        <div class="partner-card-name">Товариство з обмеженою відповідальністю «ВПП ІНВЕСТ»</div>
-      </div>
-      <div class="partner-card">
-        <div class="partner-card-img"><img src="images/partner-kpk.png" alt="Київський професійний коледж з посиленою військовою та фізичною підготовкою" loading="lazy"></div>
-        <div class="partner-card-name">Київський професійний коледж з посиленою військовою та фізичною підготовкою</div>
-      </div>
-      <div class="partner-card">
-        <div class="partner-card-img"><img src="images/partner-stels.png" alt="ТОВ ТЦ «СТЕЛС»" loading="lazy"></div>
-        <div class="partner-card-name">Товариство з обмеженою відповідальністю ТЦ «СТЕЛС»</div>
-      </div>
-      <div class="partner-card">
-        <div class="partner-card-img"><img src="images/partner-veronius.png" alt="Благодійний фонд «ВЕРОНІУС»" loading="lazy"></div>
-        <div class="partner-card-name">Благодійний фонд «ВЕРОНІУС»</div>
-      </div>
-      <div class="partner-card">
-        <div class="partner-card-img"><img src="images/partner-fvs.png" alt="Громадська організація «Федерація військово-технологічного спорту України»" loading="lazy"></div>
-        <div class="partner-card-name">Громадська організація «Федерація військово-технологічного спорту України»</div>
-      </div>
-      <div class="partner-card">
-        <div class="partner-card-img"><img src="images/partner-for-ukrainians.png" alt="Благодійний фонд «Для українців»" loading="lazy"></div>
-        <div class="partner-card-name">Благодійний фонд «Для українців»</div>
-      </div>
-    </div>
+    <div class="partners-grid" id="partnersGrid"></div>
   </div>
 </section>
 
@@ -1191,9 +1144,71 @@
   </div>
 </section>
 
+<section class="section" id="faq">
+  <div class="container">
+    <h2 class="section-title">Часті питання</h2>
+    <div class="faq-list" id="faqList">
+      <div class="faq-item">
+        <button type="button" class="faq-question" aria-expanded="false">
+          Яку продукцію виготовляє АЕРО ХАБ?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <p>БПЛА та безпілотні авіаційні комплекси (БПАК), наземні роботизовані комплекси (НРК), засоби зв'язку та системи радіоелектронної боротьби (РЕБ). Повний перелік — у розділі «Продукція».</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button type="button" class="faq-question" aria-expanded="false">
+          Чи розробляєте техніку під конкретне завдання клієнта?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <p>Так. Команда поєднує власну розробку, виробництво, тестування та технічний супровід, тому комплектацію й оснащення можна адаптувати під конкретну задачу — логістику, розвідку, розмінування, моніторинг тощо.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button type="button" class="faq-question" aria-expanded="false">
+          Чи можна замовити НРК TETRIS або TETRIS+ у розширеній комплектації?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <p>Так. На сторінці кожного комплексу вказана базова комплектація та опційне додаткове обладнання — наземна станція, Starlink, додатковий акумулятор, причіп та інше.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button type="button" class="faq-question" aria-expanded="false">
+          Скільки коштує продукція АЕРО ХАБ?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <p>Вартість розраховується індивідуально залежно від комплектації та обсягу замовлення. Щоб отримати прорахунок, залиште заявку через форму зворотного зв'язку.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button type="button" class="faq-question" aria-expanded="false">
+          Де подивитись технічні характеристики товару?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <p>На сторінці товару, у розділі «Фізичні характеристики», а також у файлі з ТТХ, який можна завантажити кнопкою на цій же сторінці.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button type="button" class="faq-question" aria-expanded="false">
+          Як зв'язатися з АЕРО ХАБ?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <p>Через форму зворотного зв'язку нижче, або за контактами (телефон, email), вказаними в розділі «Контакти».</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section class="section" id="order">
   <div class="container">
-    <h2 class="section-title">Замовити</h2>
+    <h2 class="section-title">Зворотній зв'язок</h2>
     <p class="section-sub">Заповніть форму — і ми зв'яжемось з вами найближчим часом.</p>
     <form id="orderForm">
       <label>Ім'я
@@ -1228,13 +1243,8 @@
 </div>
 
 <script>
-/* =======================================================================
-   НАЛАШТУВАННЯ
-   Встав сюди посилання на свій Apps Script Web App (див. інструкцію README).
-   Поки посилання немає — сайт показує демо-дані нижче, щоб можна було
-   одразу перевірити, як усе виглядає.
-   ======================================================================= */
-  const API_URL = "https://script.google.com/macros/s/AKfycbydsydAZ5BDpGLpFiCcYqUsqi2wtNWKtLpikoI86KlhacZFeQ5hoVDDGGv9-HFziu_zaQ/exec"; // <-- встав сюди URL розгорнутого Apps Script
+  // Backend: Google Apps Script Web App. Якщо порожній — сайт показує демо-дані нижче.
+  const API_URL = "https://script.google.com/macros/s/AKfycbydsydAZ5BDpGLpFiCcYqUsqi2wtNWKtLpikoI86KlhacZFeQ5hoVDDGGv9-HFziu_zaQ/exec";
 
   // Кеш товарів у браузері — щоб при повторному візиті сайт показував
   // товари миттєво (без очікування відповіді від Google Таблиці),
@@ -1246,8 +1256,8 @@
     settings: {
       site_name: "АЕРО ХАБ",
       hero_title: "Дрони, які працюють на результат",
-      hero_subtitle: "Розробляємо, виробляємо та впроваджуємо безпілотні літальні апарати для агросектору, моніторингу та логістики.",
-      about_text: "«АЕРО ХАБ» — українська команда інженерів і розробників, яка спеціалізується на створенні дронів під конкретні задачі клієнта: від аграрного моніторингу до картографування та логістики. Ми поєднуємо власне виробництво, тестування та технічну підтримку, щоб кожен дрон надійно працював у реальних умовах.",
+      hero_subtitle: "Розробляємо та виробляємо безпілотні літальні апарати, наземні роботизовані комплекси, засоби зв'язку та системи РЕБ. Створюємо технологічні рішення для розвідки, моніторингу, логістики, розмінування та інших спеціалізованих завдань.",
+      about_text: "АЕРО ХАБ – український розробник і виробник безпілотних та роботизованих систем. Команда інженерів створює техніку під конкретні завдання, поєднуючи власну розробку, виробництво, тестування та технічний супровід. У портфоліо – БПЛА та БПАК, наземні роботизовані комплекси, засоби зв'язку й РЕБ.\n\nПрацюємо над рішеннями для моніторингу, картографування, логістики, розмінування та інших сфер, де потрібні дистанційно керовані й технологічні системи.",
       about_photo_url: "",
       phone: "+380 67 123 45 67",
       email: "robotics.laboratory.ua@gmail.com",
@@ -1260,10 +1270,38 @@
       {id:1, name:"Товар 1", price:"500 грн", description:"Короткий опис товару 1.", image_url:"https://placehold.co/400x300?text=Фото+1,https://placehold.co/400x300?text=Фото+2,https://placehold.co/400x300?text=Фото+3", active:"yes"},
       {id:2, name:"Товар 2", price:"750 грн", description:"Короткий опис товару 2.", image_url:"https://placehold.co/400x300?text=Товар+2", active:"yes"},
       {id:3, name:"Товар 3", price:"1200 грн", description:"Короткий опис товару 3.", image_url:"https://placehold.co/400x300?text=Товар+3", active:"yes"}
+    ],
+    news: [
+      {id:1, date:"29 травня 2024", title:"AEROHUB на міжнародній спеціалізованій виставці «Технології захисту/ПожТех»", excerpt:"Команда АЕРО ХАБ взяла участь у Міжнародній спеціалізованій виставці «Технології захисту/пожтех» та представила свої розробки керованих наземних платформ зі спеціальним оснащенням.", image_url:"images/news-vystavka.jpg", detail_url:"news.html#news-1", active:"yes"},
+      {id:2, date:"21 березня 2024", title:"Український СТАРТАП: як працює дрон-сапер «КАБАН»", excerpt:"Чотири потужних колеса, захищений корпус і можливість знімати розтяжки як на відкритій місцевості, так і в приміщеннях. У Харківській області саперні групи використовують наземний безпілотник «КАБАН».", image_url:"images/kaban-1.jpg", detail_url:"news.html#news-2", active:"yes"},
+      {id:3, date:"21 березня 2024", title:"З дроном «Кабаном»: винахідники з Києва показали новий спосіб розмінування", excerpt:"В Україні активно шукають ідеї, які допоможуть полегшити та пришвидшити розмінування територій. Винахідники з Києва розробили дрон на дистанційному керуванні, який отримав назву «Кабан».", image_url:"images/kaban-2.jpg", detail_url:"news.html#news-3", active:"yes"},
+      {id:4, date:"13 березня 2024", title:"Допомога на нулі: українські військові провели випробування наземного дрона «Кабан» (BOAR)", excerpt:"Україна продовжує розвивати свої військові технології, щоб забезпечити безпеку та ефективність військових операцій. Нещодавно в країні пройшли успішні випробування роботизованих наземних платформ — розробок кластера Brave1.", image_url:"images/news-kaban-boar.jpg", detail_url:"news.html#news-4", active:"yes"}
+    ],
+    media: [
+      {id:1, image_url:"images/media-kaban-kharkiv.jpg", caption:"Дрон Кабан (Харківська обл.)", category:"combat", active:"yes"},
+      {id:2, image_url:"images/media-workshop.jpg", caption:"У цеху з виробництва", category:"production", active:"yes"},
+      {id:3, image_url:"images/media-kaban-mod-1.jpg", caption:"Модифікація дрон «Кабан»", category:"production", active:"yes"},
+      {id:4, image_url:"images/media-kaban-mod-2.jpg", caption:"Саперний дрон-демінер «Кабан», модифікація", category:"production", active:"yes"},
+      {id:5, image_url:"images/media-kaban-kamikaze-mod.jpg", caption:"Модифікація дрон «Кабан Камікадзе»", category:"production", active:"yes"},
+      {id:6, image_url:"images/media-exhibition-mvc.jpg", caption:"На виставці в МВЦ", category:"exhibition", active:"yes"},
+      {id:7, image_url:"images/media-exhibition-mvc-2.jpg", caption:"Демінер та камікадзе (МВЦ-2024)", category:"exhibition", active:"yes"}
+    ],
+    partners: [
+      {id:1, image_url:"images/partner-roboty-ua.jpg", name:"Товариство з обмеженою відповідальністю «Роботи.ЮА»", active:"yes"},
+      {id:2, image_url:"images/partner-sport-university.png", name:"Національний університет фізичного виховання і спорту України", active:"yes"},
+      {id:3, image_url:"images/partner-kai.png", name:"Державний університет «Київський авіаційний інститут»", active:"yes"},
+      {id:4, image_url:"images/partner-bioresources-university.png", name:"Національний університет біоресурсів і природокористування України", active:"yes"},
+      {id:5, image_url:"images/partner-kruk.png", name:"Центр підготовки операторів БПЛА «КРУК»", active:"yes"},
+      {id:6, image_url:"images/partner-vpp-invest.png", name:"Товариство з обмеженою відповідальністю «ВПП ІНВЕСТ»", active:"yes"},
+      {id:7, image_url:"images/partner-kpk.png", name:"Київський професійний коледж з посиленою військовою та фізичною підготовкою", active:"yes"},
+      {id:8, image_url:"images/partner-stels.png", name:"Товариство з обмеженою відповідальністю ТЦ «СТЕЛС»", active:"yes"},
+      {id:9, image_url:"images/partner-veronius.png", name:"Благодійний фонд «ВЕРОНІУС»", active:"yes"},
+      {id:10, image_url:"images/partner-fvs.png", name:"Громадська організація «Федерація військово-технологічного спорту України»", active:"yes"},
+      {id:11, image_url:"images/partner-for-ukrainians.png", name:"Благодійний фонд «Для українців»", active:"yes"}
     ]
   };
 
-  let STATE = { settings: {}, products: [] };
+  let STATE = { settings: {}, products: [], news: [], media: [], partners: [] };
 
   function esc(str){
     const d = document.createElement('div');
@@ -1272,16 +1310,28 @@
   }
 
   function applySettings(s){
-    document.title = s.site_name || "АЕРО ХАБ";
+    // Тег <title> навмисно НЕ перезаписуємо тут: у <head> вже стоїть
+    // SEO-оптимізований заголовок сторінки ("Безпілотні та роботизовані
+    // системи – АЕРО ХАБ"), і він має лишатись незмінним для пошукових
+    // систем незалежно від значення site_name. site_name і далі впливає
+    // на підпис логотипа та текст у підвалі сайту нижче.
     const logoImg = document.querySelector('#siteLogo img');
     if(logoImg) logoImg.alt = s.site_name || "АЕРО ХАБ";
     document.getElementById('heroTitle').textContent = s.hero_title || s.site_name || "Дрони, які працюють на результат";
     document.getElementById('heroSubtitle').textContent = s.hero_subtitle || "";
     document.getElementById('aboutText').textContent = s.about_text || "";
+    // Фото в блоці «Про нас» — необов'язкове. Якщо його нема, ховаємо весь
+    // блок .about-photo (а не лише саму картинку): інакше він, навіть
+    // порожній, лишає зарезервоване місце зліва (flex-basis), і текст
+    // виглядає стиснутим і зсунутим вправо.
+    const aboutPhotoWrap = document.getElementById('aboutPhotoWrap');
     if(s.about_photo_url){
       const img = document.getElementById('aboutPhoto');
       img.src = s.about_photo_url;
       img.style.display = "block";
+      aboutPhotoWrap.style.display = "";
+    }else{
+      aboutPhotoWrap.style.display = "none";
     }
     document.getElementById('footerText').textContent = s.footer_text || "© " + new Date().getFullYear() + " " + (s.site_name || "");
 
@@ -1416,7 +1466,7 @@
           <p class="lineup-price">${esc(priceText)}</p>
           <div class="lineup-actions">
             ${detailUrl ? `<a href="${esc(detailUrl)}" class="btn lineup-detail-link">Детальніше</a>` : (details.length > 0 ? `<button type="button" class="btn btn-outline lineup-details-toggle">Детальніше</button>` : "")}
-            <button type="button" class="btn order-btn" data-name="${esc(p.name)}">Замовити</button>
+            <button type="button" class="btn order-btn" data-name="${esc(p.name)}">Зворотній зв'язок</button>
           </div>
           ${(!detailUrl && details.length > 0) ? `<ul class="lineup-details-list">${details.map(d => `<li>${esc(d)}</li>`).join("")}</ul>` : ""}
         </div>`;
@@ -1437,10 +1487,18 @@
         if(prevBtn) prevBtn.addEventListener('click', (e) => { e.stopPropagation(); setIndex(idx - 1); });
         if(nextBtn) nextBtn.addEventListener('click', (e) => { e.stopPropagation(); setIndex(idx + 1); });
         dots.forEach(d => d.addEventListener('click', (e) => { e.stopPropagation(); setIndex(Number(d.dataset.i)); }));
-        imgEl.addEventListener('click', () => openLightbox(images, idx));
+        // Клік по фото картки товару веде на сторінку опису — так само, як
+        // клік по назві/будь-якій іншій частині картки. Повноекранний
+        // перегляд фото доступний лише всередині сторінки опису товару.
+        // Якщо в товару нема окремої сторінки опису — лишаємо старий лайтбокс,
+        // бо йому більше нікуди вести.
+        imgEl.addEventListener('click', () => {
+          if(detailUrl){ window.location.href = detailUrl; }
+          else{ openLightbox(images, idx); }
+        });
       }
 
-      // --- кнопка "Замовити" на картці ---
+      // --- кнопка "Зворотній зв'язок" на картці ---
       card.querySelector('.order-btn').addEventListener('click', () => {
         document.getElementById('productSelect').value = p.name;
         document.getElementById('order').scrollIntoView({behavior:'smooth'});
@@ -1484,6 +1542,92 @@
       .filter(Boolean);
   }
 
+  /** Прибирає рядки без активного прапорця "active" (значення "no") — той самий підхід, що й для товарів */
+  function onlyActive(items){
+    return (items || []).filter(item => (item.active === undefined) || String(item.active).toLowerCase() !== "no");
+  }
+
+  function renderNews(newsItems){
+    const grid = document.getElementById('newsGrid');
+    if(!grid) return;
+    grid.innerHTML = "";
+    onlyActive(newsItems).forEach(n => {
+      const href = String(n.detail_url || "").trim() || "news.html";
+      const article = document.createElement('article');
+      article.className = "news-card";
+      article.innerHTML = `
+        <a href="${esc(href)}" class="news-img-wrap"><img src="${esc(n.image_url || "")}" alt="${esc(n.title || "")}" loading="lazy"></a>
+        <div class="news-card-body">
+          <div class="news-date">${esc(n.date || "")}</div>
+          <h3 class="news-title"><a href="${esc(href)}">${esc(n.title || "")}</a></h3>
+          <p class="news-excerpt">${esc(n.excerpt || "")}</p>
+          <a class="news-link" href="${esc(href)}">Читати повністю →</a>
+        </div>`;
+      grid.appendChild(article);
+    });
+  }
+
+  function renderPartners(partnerItems){
+    const grid = document.getElementById('partnersGrid');
+    if(!grid) return;
+    grid.innerHTML = "";
+    onlyActive(partnerItems).forEach(p => {
+      const card = document.createElement('div');
+      card.className = "partner-card";
+      card.innerHTML = `
+        <div class="partner-card-img"><img src="${esc(p.image_url || "")}" alt="${esc(p.name || "")}" loading="lazy"></div>
+        <div class="partner-card-name">${esc(p.name || "")}</div>`;
+      grid.appendChild(card);
+    });
+  }
+
+  function renderMedia(mediaItems){
+    const grid = document.getElementById('mediaGrid');
+    if(!grid) return;
+    grid.innerHTML = "";
+    onlyActive(mediaItems).forEach(m => {
+      const card = document.createElement('div');
+      card.className = "media-card";
+      card.dataset.cat = String(m.category || "").trim();
+      card.innerHTML = `
+        <img src="${esc(m.image_url || "")}" alt="${esc(m.caption || "")}" loading="lazy">
+        <div class="media-card-caption">${esc(m.caption || "")}</div>`;
+      grid.appendChild(card);
+    });
+
+    // ---- Медіа: фільтр за категорією + лайтбокс (перепідключаємо після кожного рендеру) ----
+    const mediaFilter = document.getElementById('mediaFilter');
+    const mediaCards = Array.from(grid.querySelectorAll('.media-card'));
+
+    if(mediaFilter){
+      const activeBtn = mediaFilter.querySelector('button.active') || mediaFilter.querySelector('button');
+      const activeCat = activeBtn ? activeBtn.dataset.cat : 'all';
+      mediaCards.forEach(card => {
+        const show = (activeCat === 'all') || (card.dataset.cat === activeCat);
+        card.classList.toggle('hidden', !show);
+      });
+
+      mediaFilter.querySelectorAll('button').forEach(btn => {
+        btn.onclick = () => {
+          mediaFilter.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          const cat = btn.dataset.cat;
+          mediaCards.forEach(card => {
+            const show = (cat === 'all') || (card.dataset.cat === cat);
+            card.classList.toggle('hidden', !show);
+          });
+        };
+      });
+    }
+
+    mediaCards.forEach(card => {
+      const img = card.querySelector('img');
+      if(img){
+        card.addEventListener('click', () => openLightbox([img.getAttribute('src')], 0));
+      }
+    });
+  }
+
   // ---- Лайтбокс (перегляд фото на весь екран) ----
   let lightboxImages = [];
   let lightboxIndex = 0;
@@ -1522,23 +1666,60 @@
     if(e.key === 'ArrowRight') document.getElementById('lightboxNext').click();
   });
 
+  // Статичний знімок даних (products.json), який лежить поруч на хостингу.
+  // Завантажується миттєво, бо він на тому ж домені й не чекає на "холодний
+  // старт" Google Apps Script. Оновлюється командою "Оновити дані на сайті"
+  // (див. update-products-json.md) щоразу, коли міняється Google Таблиця.
+  async function loadStaticSnapshot(){
+    try{
+      const res = await fetch("products.json", {cache:"no-cache"});
+      if(!res.ok) return null;
+      const data = await res.json();
+      if(!data || !Array.isArray(data.products)) return null;
+      return { settings: data.settings || {}, products: data.products || [] };
+    }catch(err){
+      return null; // нема файлу або зіпсований — просто йдемо далі як раніше
+    }
+  }
+
+  /** Застосовує весь стан сайту (тексти, товари, новини, медіа, партнери) одразу */
+  function applyAllContent(state){
+    applySettings(state.settings || {});
+    renderProducts(state.products || []);
+    renderNews(state.news || []);
+    renderMedia(state.media || []);
+    renderPartners(state.partners || []);
+  }
+
   async function loadData(){
     if(!API_URL){
       STATE = DEMO_DATA;
-      applySettings(STATE.settings);
-      renderProducts(STATE.products);
+      applyAllContent(STATE);
       return;
     }
 
-    // Якщо є свіжий кеш — показуємо його миттєво (0 секунд очікування),
-    // а актуальні дані з таблиці підвантажуємо тихо у фоні нижче.
+    // Якщо є свіжий кеш — показуємо його миттєво (0 секунд очікування).
+    // Якщо кешу нема (перший візит або він застарів) — пробуємо статичний
+    // products.json: він на цьому ж хостингу, тож завантажується за
+    // мілісекунди, без затримки "холодного старту" Google Apps Script.
+    // (Знімок містить лише тексти й товари — новини/медіа/партнери
+    // з'являться трохи пізніше, коли підвантажаться свіжі дані з таблиці.)
+    // У будь-якому разі нижче ще підвантажуються актуальні дані з таблиці
+    // у фоні — самі свіжі правки завжди наздоганяють показане.
     const cached = readCache();
+    let shownSomething = false;
     if(cached){
       STATE = cached;
-      applySettings(STATE.settings);
-      renderProducts(STATE.products);
+      applyAllContent(STATE);
+      shownSomething = true;
     }else{
       renderSkeletons();
+      const snapshot = await loadStaticSnapshot();
+      if(snapshot){
+        STATE = snapshot;
+        applyAllContent(STATE);
+        shownSomething = true;
+      }
     }
 
     try{
@@ -1547,19 +1728,20 @@
       const data = await res.json();
       STATE = {
         settings: data.settings || {},
-        products: data.products || []
+        products: data.products || [],
+        news: data.news || [],
+        media: data.media || [],
+        partners: data.partners || []
       };
-      applySettings(STATE.settings);
-      renderProducts(STATE.products);
+      applyAllContent(STATE);
       writeCache(STATE);
     }catch(err){
       console.error("Не вдалось завантажити дані з API, показую демо-дані:", err);
-      if(!cached){
+      if(!shownSomething){
         STATE = DEMO_DATA;
-        applySettings(STATE.settings);
-        renderProducts(STATE.products);
+        applyAllContent(STATE);
       }
-      // якщо кеш вже показано — просто лишаємо його, картки не зникають
+      // якщо кеш або знімок вже показано — просто лишаємо його, картки не зникають
     }
   }
 
@@ -1568,6 +1750,25 @@
   const mobileMenu = document.getElementById('mobileMenu');
   burgerBtn.addEventListener('click', () => mobileMenu.classList.toggle('open'));
   mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => mobileMenu.classList.remove('open')));
+
+  // ---- FAQ ----
+  document.querySelectorAll('.faq-item').forEach(item => {
+    const question = item.querySelector('.faq-question');
+    const answer = item.querySelector('.faq-answer');
+    question.addEventListener('click', () => {
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item.open').forEach(other => {
+        if(other !== item){
+          other.classList.remove('open');
+          other.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
+          other.querySelector('.faq-answer').style.maxHeight = null;
+        }
+      });
+      item.classList.toggle('open', !isOpen);
+      question.setAttribute('aria-expanded', String(!isOpen));
+      answer.style.maxHeight = !isOpen ? answer.scrollHeight + 'px' : null;
+    });
+  });
 
   // ---- Форма замовлення ----
   const orderForm = document.getElementById('orderForm');
@@ -1610,31 +1811,6 @@
     }finally{
       submitBtn.disabled = false;
       submitBtn.textContent = "Надіслати заявку";
-    }
-  });
-
-  // ---- Медіа: фільтр за категорією + лайтбокс ----
-  const mediaFilter = document.getElementById('mediaFilter');
-  const mediaCards = Array.from(document.querySelectorAll('#mediaGrid .media-card'));
-
-  if(mediaFilter){
-    mediaFilter.querySelectorAll('button').forEach(btn => {
-      btn.addEventListener('click', () => {
-        mediaFilter.querySelectorAll('button').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        const cat = btn.dataset.cat;
-        mediaCards.forEach(card => {
-          const show = (cat === 'all') || (card.dataset.cat === cat);
-          card.classList.toggle('hidden', !show);
-        });
-      });
-    });
-  }
-
-  mediaCards.forEach(card => {
-    const img = card.querySelector('img');
-    if(img){
-      card.addEventListener('click', () => openLightbox([img.getAttribute('src')], 0));
     }
   });
 
